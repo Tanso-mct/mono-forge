@@ -416,3 +416,9 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+## DirectXTK12's files are not need to ignore.
+!mono_forge/directxtk12/**
+
+## CSO
+*.cso
