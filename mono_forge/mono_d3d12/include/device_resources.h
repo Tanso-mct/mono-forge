@@ -37,12 +37,12 @@ namespace mono_d3d12
         std::vector<Microsoft::WRL::ComPtr<ID3D12CommandAllocator>> commandAllocators_;
         std::vector<Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>> commandLists_;
 
-        UINT renderTargetCount_;
+        UINT renderTargetCount_ = 0;
         std::vector<Microsoft::WRL::ComPtr<ID3D12Resource>> renderTargets_;
         Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> rtvDescriptorHeap_;
         UINT rtvDescriptorSize_;
 
-        UINT depthStencilCount_;
+        UINT depthStencilCount_ = 0;
         std::vector<Microsoft::WRL::ComPtr<ID3D12Resource>> depthStencils_;
         Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> dsvDescriptorHeap_;
         UINT dsvDescriptorSize_;
@@ -54,9 +54,9 @@ namespace mono_d3d12
     struct SwapChainContext
     {
         Microsoft::WRL::ComPtr<IDXGISwapChain3> swapChain_;
-        UINT frameCount_;
-        UINT frameIndex_;
-        UINT syncInterval_;
+        UINT frameCount_ = 0;
+        UINT frameIndex_ = 0;
+        UINT syncInterval_ = 0;
     };
 
 } // namespace mono_d3d12
