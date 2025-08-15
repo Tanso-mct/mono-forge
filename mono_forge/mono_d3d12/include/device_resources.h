@@ -1,14 +1,18 @@
 ﻿#pragma once
 #include "mono_d3d12/include/dll_config.h"
+#include "riaecs/riaecs.h"
 
 #include <d3d12.h>
 #include <dxgi1_6.h>
 #include <wrl/client.h>
+#include <shared_mutex>
 
 namespace mono_d3d12
 {
     class MONO_D3D12_API D3D12DeviceResources
     {
+    private:
+        std::shared_mutex mutex_;
     public:
         D3D12DeviceResources() = default;
         ~D3D12DeviceResources() = default;
@@ -18,7 +22,7 @@ namespace mono_d3d12
         Microsoft::WRL::ComPtr<ID3D12CommandQueue> commandQueue_;
         D3D_FEATURE_LEVEL featureLevel = D3D_FEATURE_LEVEL_12_0; 
 
-        D3D12DeviceResources &GetInstance();
+        riaecs::ReadWriteObject<D3D12DeviceResources> GetInstance();
     };
 
     struct FenceContext
