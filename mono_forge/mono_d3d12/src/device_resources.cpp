@@ -3,9 +3,9 @@
 
 #include "mono_d3d12/include/d3d12_utils.h"
 
-MONO_D3D12_API mono_d3d12::DeviceResources& mono_d3d12::DeviceResources::GetInstance()
+MONO_D3D12_API mono_d3d12::D3D12DeviceResources& mono_d3d12::D3D12DeviceResources::GetInstance()
 {
-    static DeviceResources instance;
+    static D3D12DeviceResources instance;
     static bool isInitialized = false;
 
     if (!isInitialized)
