@@ -42,4 +42,18 @@ namespace mono_d3d12
     };
     extern MONO_D3D12_API riaecs::ComponentRegistrar<WindowD3D12Component, WindowD3D12ComponentMaxCount> WindowD3D12ComponentID;
 
+    // void Create(WindowD3D12Component *component);
+    // void Destroy(WindowD3D12Component *component);
+    // void Resize(WindowD3D12Component *component, UINT width, UINT height);
+
+    // void Show(WindowD3D12Component *component);
+    // void Hide(WindowD3D12Component *component);
+    // void Focus(WindowD3D12Component *component);
+    // void UnFocus(WindowD3D12Component *component);
+    // void Maximize(WindowD3D12Component *component);
+    // void Minimize(WindowD3D12Component *component);
+    // void FullScreen(WindowD3D12Component *component);
+    // void Restore(WindowD3D12Component *component);
+    // void SetPosition(WindowD3D12Component *component, UINT x, UINT y);
+
 } // namespace mono_d3d12

@@ -3,9 +3,9 @@
 
 #include "mono_d3d12/include/d3d12_utils.h"
 
-MONO_D3D12_API riaecs::ReadWriteObject<mono_d3d12::D3D12DeviceResources> mono_d3d12::D3D12DeviceResources::GetInstance()
+MONO_D3D12_API riaecs::ReadWriteObject<mono_d3d12::D3D12DeviceResource> mono_d3d12::D3D12DeviceResource::GetInstance()
 {
-    static D3D12DeviceResources instance;
+    static D3D12DeviceResource instance;
     static bool isInitialized = false;
 
     if (!isInitialized)
@@ -19,5 +19,5 @@ MONO_D3D12_API riaecs::ReadWriteObject<mono_d3d12::D3D12DeviceResources> mono_d3
     }
 
     std::unique_lock<std::shared_mutex> mainLock(instance.mutex_);
-    return riaecs::ReadWriteObject<mono_d3d12::D3D12DeviceResources>(std::move(mainLock), instance);
+    return riaecs::ReadWriteObject<mono_d3d12::D3D12DeviceResource>(std::move(mainLock), instance);
 }

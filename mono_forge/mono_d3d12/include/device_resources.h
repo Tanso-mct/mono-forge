@@ -9,20 +9,20 @@
 
 namespace mono_d3d12
 {
-    class MONO_D3D12_API D3D12DeviceResources
+    class MONO_D3D12_API D3D12DeviceResource
     {
     private:
         std::shared_mutex mutex_;
+
+        D3D12DeviceResource() = default;
     public:
-        D3D12DeviceResources() = default;
-        ~D3D12DeviceResources() = default;
 
         Microsoft::WRL::ComPtr<IDXGIFactory4> factory_;
         Microsoft::WRL::ComPtr<ID3D12Device4> device_;
         Microsoft::WRL::ComPtr<ID3D12CommandQueue> commandQueue_;
         D3D_FEATURE_LEVEL featureLevel = D3D_FEATURE_LEVEL_12_0; 
 
-        riaecs::ReadWriteObject<D3D12DeviceResources> GetInstance();
+        static riaecs::ReadWriteObject<D3D12DeviceResource> GetInstance();
     };
 
     struct FenceContext
