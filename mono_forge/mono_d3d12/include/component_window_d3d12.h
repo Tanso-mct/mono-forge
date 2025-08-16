@@ -65,15 +65,30 @@ namespace mono_d3d12
 
     MONO_D3D12_API void UpdateD3D12WindowSize(WindowD3D12Component *component);
     MONO_D3D12_API void UpdateD3D12WindowClientSize(WindowD3D12Component *component);
+    MONO_D3D12_API void UpdateD3D12WindowPosition(WindowD3D12Component *component);
 
     MONO_D3D12_API void ShowD3D12Window(WindowD3D12Component *component);
     MONO_D3D12_API void HideD3D12Window(WindowD3D12Component *component);
-    // MONO_D3D12_API void Focus(WindowD3D12Component *component);
-    // MONO_D3D12_API void UnFocus(WindowD3D12Component *component);
-    // MONO_D3D12_API void Maximize(WindowD3D12Component *component);
-    // MONO_D3D12_API void Minimize(WindowD3D12Component *component);
-    // MONO_D3D12_API void FullScreen(WindowD3D12Component *component);
-    // MONO_D3D12_API void Restore(WindowD3D12Component *component);
+
+    MONO_D3D12_API void FocusD3D12Window(WindowD3D12Component *component);
+    MONO_D3D12_API void FocusedD3D12Window(WindowD3D12Component *component);
+
+    MONO_D3D12_API void UnFocusD3D12Window(WindowD3D12Component *component);
+    MONO_D3D12_API void UnFocusedD3D12Window(WindowD3D12Component *component);
+
+    MONO_D3D12_API void MaximizeD3D12Window(WindowD3D12Component *component);
+    MONO_D3D12_API void MaximizedD3D12Window(WindowD3D12Component *component);
+
+    MONO_D3D12_API void MinimizeD3D12Window(WindowD3D12Component *component);
+    MONO_D3D12_API void MinimizedD3D12Window(WindowD3D12Component *component);
+
+    MONO_D3D12_API void FullScreenD3D12Window(WindowD3D12Component *component);
+    MONO_D3D12_API void FullScreenedD3D12Window(WindowD3D12Component *component);
+
+    MONO_D3D12_API void RestoreD3D12Window(WindowD3D12Component *component);
+    MONO_D3D12_API void RestoredD3D12Window(WindowD3D12Component *component);
+
     MONO_D3D12_API void SetD3D12WindowPosition(WindowD3D12Component *component, UINT x, UINT y);
+    MONO_D3D12_API void MovedD3D12Window(WindowD3D12Component *component);
 
 } // namespace mono_d3d12

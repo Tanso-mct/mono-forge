@@ -58,21 +58,46 @@ TEST(WindowD3D12, Create)
         {
             while (isRunning)
             {
+                // For multithreaded access to the window component
+                std::unique_lock<std::shared_mutex> lock(windowComponent.mutex_);
+
                 mono_d3d12::WindowMessageState& messageState = mono_d3d12::WindowMessageState::GetInstance();
                 std::vector<mono_d3d12::WindowMessage> wndMsgs = messageState.TakeMessages(windowComponent.handle_);
+
                 for (const auto& wndMsg : wndMsgs)
                 {
-                    if (wndMsg.message == WM_SIZE)
-                        mono_d3d12::ResizedD3D12Window(&windowComponent);
-                    
-                    if (wndMsg.message == WM_DESTROY)
+                    switch (wndMsg.message)
                     {
+                    case WM_DESTROY:
                         mono_d3d12::DestroyedD3D12Window(&windowComponent);
                         EXPECT_FALSE(windowComponent.isCreated_);
-
                         isRunning = false;
-                    }
+                        break;
+
+                    case WM_SETFOCUS:
+                        mono_d3d12::FocusedD3D12Window(&windowComponent);
+                        break;
+
+                    case WM_KILLFOCUS:
+                        mono_d3d12::UnFocusedD3D12Window(&windowComponent);
+                        break;
+
+                    case WM_SIZE:
+                        if (wndMsg.wParam == SIZE_MAXIMIZED) mono_d3d12::MaximizedD3D12Window(&windowComponent);
+                        else if (wndMsg.wParam == SIZE_MINIMIZED) mono_d3d12::MinimizedD3D12Window(&windowComponent);
+                        else if (wndMsg.wParam == SIZE_RESTORED) mono_d3d12::RestoredD3D12Window(&windowComponent);
+
+                    case WM_MOVE:
+                        mono_d3d12::MovedD3D12Window(&windowComponent);
+                        break;
+
+                    default:
+                        break;
+                    };
                 }
+
+                if (windowComponent.needsResize_)
+                    mono_d3d12::ResizedD3D12Window(&windowComponent);
             }
         }
     );
