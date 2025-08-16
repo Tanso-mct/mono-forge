@@ -56,9 +56,14 @@ namespace mono_d3d12
     extern MONO_D3D12_API riaecs::ComponentRegistrar<WindowD3D12Component, WindowD3D12ComponentMaxCount> WindowD3D12ComponentID;
 
     MONO_D3D12_API void CreateD3D12Window(WindowD3D12Component *component, WNDCLASSEX &wc);
-    MONO_D3D12_API void DestroyD3D12Window(WindowD3D12Component *component);
-    // MONO_D3D12_API void Resize(WindowD3D12Component *component, UINT width, UINT height);
 
+    MONO_D3D12_API void DestroyD3D12Window(WindowD3D12Component *component);
+    MONO_D3D12_API void DestroyedD3D12Window(WindowD3D12Component *component);
+
+    MONO_D3D12_API void ResizeD3D12Window(WindowD3D12Component *component, UINT width, UINT height);
+    MONO_D3D12_API void ResizedD3D12Window(WindowD3D12Component *component);
+
+    MONO_D3D12_API void UpdateD3D12WindowSize(WindowD3D12Component *component);
     MONO_D3D12_API void UpdateD3D12WindowClientSize(WindowD3D12Component *component);
 
     MONO_D3D12_API void ShowD3D12Window(WindowD3D12Component *component);

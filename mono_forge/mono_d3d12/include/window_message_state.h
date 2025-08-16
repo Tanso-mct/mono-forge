@@ -3,6 +3,8 @@
 
 #include <Windows.h>
 #include <unordered_map>
+#include <vector>
+#include <shared_mutex>
 
 namespace mono_d3d12
 {
@@ -19,6 +21,7 @@ namespace mono_d3d12
     class MONO_D3D12_API WindowMessageState
     {
     private:
+        std::shared_mutex mutex_;
         std::unordered_map<HWND, std::vector<WindowMessage>> messages_;
 
         WindowMessageState() = default;

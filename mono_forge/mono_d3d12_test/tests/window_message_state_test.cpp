@@ -4,6 +4,7 @@
 #pragma comment(lib, "mono_d3d12.lib")
 
 #include <Windows.h>
+#include <future>
 
 static LRESULT CALLBACK WindowProcD3D12Helpers(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
@@ -64,6 +65,27 @@ TEST(WindowMessageState, AddAndTakeMessages)
 
     CreateWindowTemp(hWnd, wc, L"WindowMessageStateTest");
 
+    bool isRunning = true;
+    std::future<void> mainLoop = std::async
+    (
+        std::launch::async, [hWnd, &isRunning]()
+        {
+            while (isRunning)
+            {
+                mono_d3d12::WindowMessageState& messageState = mono_d3d12::WindowMessageState::GetInstance();
+                std::vector<mono_d3d12::WindowMessage> wndMsgs = messageState.TakeMessages(hWnd);
+                for (const auto& wndMsg : wndMsgs)
+                {
+                    if (wndMsg.message != WM_PAINT)
+                        std::cout << "Message: " << wndMsg.message << std::endl;
+                    
+                    if (wndMsg.message == WM_DESTROY)
+                        isRunning = false;
+                }
+            }
+        }
+    );
+
     // Run the message loop
     MSG msg;
     while (GetMessage(&msg, nullptr, 0, 0))
@@ -71,17 +93,11 @@ TEST(WindowMessageState, AddAndTakeMessages)
         TranslateMessage(&msg);
         DispatchMessage(&msg);
 
-        mono_d3d12::WindowMessageState& messageState = mono_d3d12::WindowMessageState::GetInstance();
-        std::vector<mono_d3d12::WindowMessage> wndMsgs = messageState.TakeMessages(hWnd);
-        for (const auto& wndMsg : wndMsgs)
-        {
-            if (wndMsg.message != WM_PAINT)
-                std::cout << "Message: " << wndMsg.message << std::endl;
-            
-            if (wndMsg.message == WM_DESTROY)
-                PostQuitMessage(0);
-        }
+        if (!isRunning)
+            PostQuitMessage(0);
     }
 
+    mainLoop.get();
+    
     DestroyWindow(hWnd);
 }

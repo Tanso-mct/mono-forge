@@ -189,6 +189,12 @@ MONO_D3D12_API void mono_d3d12::DestroyD3D12Window(WindowD3D12Component *compone
 
     if (!UnregisterClass(component->className_.c_str(), component->instance_))
         riaecs::NotifyError({"Failed to unregister window class."}, RIAECS_LOG_LOC);
+}
+
+MONO_D3D12_API void mono_d3d12::DestroyedD3D12Window(WindowD3D12Component *component)
+{
+    if (!component->isCreated_)
+        riaecs::NotifyError({"This window is not created."}, RIAECS_LOG_LOC);
 
     riaecs::ReadWriteObject<mono_d3d12::D3D12DeviceResource> deviceResource
     = mono_d3d12::D3D12DeviceResource::GetInstance();
@@ -221,7 +227,122 @@ MONO_D3D12_API void mono_d3d12::DestroyD3D12Window(WindowD3D12Component *compone
     for (auto& fenceValue : component->fenceContext_.fenceValues_)
         fenceValue = mono_d3d12::INITIAL_FENCE_VALUE;
 
+    component->needsDestroy_ = false;
     component->isCreated_ = false;
+}
+
+MONO_D3D12_API void mono_d3d12::ResizeD3D12Window(WindowD3D12Component *component, UINT width, UINT height)
+{
+    if (!component->isCreated_)
+        riaecs::NotifyError({"Window must be created before resizing."}, RIAECS_LOG_LOC);
+
+    if (width == 0 || height == 0)
+        riaecs::NotifyError({"Width and height must be greater than zero."}, RIAECS_LOG_LOC);
+
+    component->width_ = width;
+    component->height_ = height;
+
+    if (!SetWindowPos(component->handle_, nullptr, component->posX_, component->posY_, width, height, SWP_NOZORDER))
+        riaecs::NotifyError({"Failed to set window size."}, RIAECS_LOG_LOC);
+}
+
+MONO_D3D12_API void mono_d3d12::ResizedD3D12Window(WindowD3D12Component *component)
+{
+    if (!component->isCreated_)
+        riaecs::NotifyError({"Window must be created before resizing."}, RIAECS_LOG_LOC);
+
+    mono_d3d12::UpdateD3D12WindowSize(component);
+    mono_d3d12::UpdateD3D12WindowClientSize(component);
+
+    riaecs::ReadWriteObject<mono_d3d12::D3D12DeviceResource> deviceResource
+    = mono_d3d12::D3D12DeviceResource::GetInstance();
+
+    for (auto& renderTarget : component->renderTargetContext_.renderTargets_)
+        renderTarget.Reset();
+
+    for (auto& depthStencil : component->renderTargetContext_.depthStencils_)
+        depthStencil.Reset();
+
+    for (auto& fenceValue : component->fenceContext_.fenceValues_)
+        fenceValue = mono_d3d12::INITIAL_FENCE_VALUE;
+
+    mono_d3d12::ResizeSwapChain
+    (
+        component->swapChainContext_.frameCount_, component->swapChainContext_.frameIndex_,
+        component->clientWidth_, component->clientHeight_,
+        component->swapChainContext_.swapChain_
+    );
+
+    mono_d3d12::GetBuffersFromSwapChain
+    (
+        component->swapChainContext_.swapChain_, component->swapChainContext_.frameCount_,
+        component->renderTargetContext_.renderTargets_
+    );
+
+    for (UINT i = 0; i < component->swapChainContext_.frameCount_; ++i)
+        mono_d3d12::SetName
+        (
+            component->renderTargetContext_.renderTargets_[i].Get(),
+            component->name_ + L" Render Target " + std::to_wstring(i + 1)
+        );
+
+    mono_d3d12::CreateRenderTargetView
+    (
+        deviceResource().device_, 
+        component->renderTargetContext_.renderTargetCount_, component->renderTargetContext_.renderTargets_, 
+        component->renderTargetContext_.rtvDescriptorHeap_, component->renderTargetContext_.rtvDescriptorSize_
+    );
+
+    for (UINT i = 0; i < component->renderTargetContext_.depthStencilCount_; ++i)
+    {
+        mono_d3d12::CreateDepthStencil
+        (
+            deviceResource().device_, component->clientWidth_, component->clientHeight_,
+            component->renderTargetContext_.depthStencils_[i]
+        );
+
+        mono_d3d12::SetName
+        (
+            component->renderTargetContext_.depthStencils_[i].Get(),
+            component->name_ + L" Depth Stencil " + std::to_wstring(i + 1)
+        );
+    }
+
+    mono_d3d12::CreateDepthStencilView
+    (
+        deviceResource().device_, 
+        component->renderTargetContext_.depthStencilCount_, component->renderTargetContext_.depthStencils_, 
+        component->renderTargetContext_.dsvDescriptorHeap_, component->renderTargetContext_.dsvDescriptorSize_
+    );
+
+    mono_d3d12::CreateViewport
+    (
+        component->renderTargetContext_.viewPort_, 
+        component->clientWidth_, component->clientHeight_
+    );
+
+    mono_d3d12::CreateScissorRect
+    (
+        component->renderTargetContext_.scissorRect_, 
+        component->clientWidth_, component->clientHeight_
+    );
+
+    component->needsResize_ = false;
+}
+
+MONO_D3D12_API void mono_d3d12::UpdateD3D12WindowSize(WindowD3D12Component *component)
+{
+    if (!component->isCreated_)
+        riaecs::NotifyError({"Window must be created before updating size."}, RIAECS_LOG_LOC);
+
+    RECT windowRect;
+    if (!GetWindowRect(component->handle_, &windowRect))
+        riaecs::NotifyError({"Failed to get window rectangle."}, RIAECS_LOG_LOC);
+
+    component->width_ = windowRect.right - windowRect.left;
+    component->height_ = windowRect.bottom - windowRect.top;
+
+    mono_d3d12::UpdateD3D12WindowClientSize(component);
 }
 
 MONO_D3D12_API void mono_d3d12::UpdateD3D12WindowClientSize(WindowD3D12Component *component)
