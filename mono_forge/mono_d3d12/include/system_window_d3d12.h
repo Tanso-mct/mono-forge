@@ -4,6 +4,8 @@
 
 namespace mono_d3d12
 {
+    LRESULT MONO_D3D12_API CALLBACK WindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
     class MONO_D3D12_API SystemWindowD3D12 : public riaecs::ISystem
     {
     public:

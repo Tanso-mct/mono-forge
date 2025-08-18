@@ -3,6 +3,7 @@
 
 #include "mono_d3d12/include/d3d12_utils.h"
 #include "mono_d3d12/include/device_resources.h"
+#include "mono_d3d12/include/system_window_d3d12.h"
 
 mono_d3d12::WindowD3D12Component::WindowD3D12Component()
 {
@@ -44,7 +45,7 @@ mono_d3d12::WindowD3D12Component::~WindowD3D12Component()
 MONO_D3D12_API riaecs::ComponentRegistrar
 <mono_d3d12::WindowD3D12Component, mono_d3d12::WindowD3D12ComponentMaxCount> mono_d3d12::WindowD3D12ComponentID;
 
-MONO_D3D12_API void mono_d3d12::CreateD3D12Window(WindowD3D12Component *component, WNDCLASSEX &wc)
+MONO_D3D12_API void mono_d3d12::CreateD3D12Window(WindowD3D12Component *component)
 {
     if (component->isCreated_)
         riaecs::NotifyError({"This window is already created."}, RIAECS_LOG_LOC);
@@ -55,6 +56,11 @@ MONO_D3D12_API void mono_d3d12::CreateD3D12Window(WindowD3D12Component *componen
     if (component->swapChainContext_.frameCount_ != component->renderTargetContext_.renderTargetCount_)
         riaecs::NotifyError({"Swap chain frame count must match render target count."}, RIAECS_LOG_LOC);
     
+    WNDCLASSEX wc = {};
+    wc.cbSize = sizeof(WNDCLASSEX);
+    wc.lpfnWndProc = mono_d3d12::WindowProc;
+    wc.hInstance = GetModuleHandle(nullptr);
+    wc.lpszClassName = component->className_.c_str();
     if (!RegisterClassEx(&wc))
         riaecs::NotifyError({"Failed to register window class."}, RIAECS_LOG_LOC);
 
@@ -394,6 +400,8 @@ MONO_D3D12_API void mono_d3d12::HideD3D12Window(WindowD3D12Component *component)
 
     if (!ShowWindow(component->handle_, SW_HIDE))
         riaecs::NotifyError({"Failed to hide window."}, RIAECS_LOG_LOC);
+
+    component->needsHide_ = false;
 }
 
 MONO_D3D12_API void mono_d3d12::FocusD3D12Window(WindowD3D12Component *component)
@@ -408,6 +416,8 @@ MONO_D3D12_API void mono_d3d12::FocusD3D12Window(WindowD3D12Component *component
 
     if (!SetFocus(component->handle_))
         riaecs::NotifyError({"Failed to set focus to window."}, RIAECS_LOG_LOC);
+
+    component->needsFocus_ = false;
 }
 
 MONO_D3D12_API void mono_d3d12::FocusedD3D12Window(WindowD3D12Component *component)
@@ -425,6 +435,8 @@ MONO_D3D12_API void mono_d3d12::UnFocusD3D12Window(WindowD3D12Component *compone
 
     if (!SetFocus(nullptr))
         riaecs::NotifyError({"Failed to remove focus from window."}, RIAECS_LOG_LOC);
+
+    component->needsUnFocus_ = false;
 }
 
 MONO_D3D12_API void mono_d3d12::UnFocusedD3D12Window(WindowD3D12Component *component)
@@ -442,6 +454,8 @@ MONO_D3D12_API void mono_d3d12::MaximizeD3D12Window(WindowD3D12Component *compon
 
     if (!ShowWindow(component->handle_, SW_MAXIMIZE))
         riaecs::NotifyError({"Failed to maximize window."}, RIAECS_LOG_LOC);
+
+    component->needsMaximize_ = false;
 }
 
 MONO_D3D12_API void mono_d3d12::MaximizedD3D12Window(WindowD3D12Component *component)
@@ -450,7 +464,6 @@ MONO_D3D12_API void mono_d3d12::MaximizedD3D12Window(WindowD3D12Component *compo
         riaecs::NotifyError({"Window must be created before maximizing."}, RIAECS_LOG_LOC);
 
     component->isMaximized_ = true;
-    component->needsResize_ = true;
 }
 
 MONO_D3D12_API void mono_d3d12::MinimizeD3D12Window(WindowD3D12Component *component)
@@ -460,6 +473,8 @@ MONO_D3D12_API void mono_d3d12::MinimizeD3D12Window(WindowD3D12Component *compon
 
     if (!ShowWindow(component->handle_, SW_MINIMIZE))
         riaecs::NotifyError({"Failed to minimize window."}, RIAECS_LOG_LOC);
+
+    component->needsMinimize_ = false;
 }
 
 MONO_D3D12_API void mono_d3d12::MinimizedD3D12Window(WindowD3D12Component *component)
@@ -468,7 +483,6 @@ MONO_D3D12_API void mono_d3d12::MinimizedD3D12Window(WindowD3D12Component *compo
         riaecs::NotifyError({"Window must be created before minimizing."}, RIAECS_LOG_LOC);
 
     component->isMinimized_ = true;
-    component->needsResize_ = true;
 }
 
 MONO_D3D12_API void mono_d3d12::FullScreenD3D12Window(WindowD3D12Component *component)
@@ -495,6 +509,8 @@ MONO_D3D12_API void mono_d3d12::FullScreenD3D12Window(WindowD3D12Component *comp
     );
     if (!result)
         riaecs::NotifyError({"Failed to set window to full screen."}, RIAECS_LOG_LOC);
+
+    component->needsFullScreen_ = false;
 }
 
 MONO_D3D12_API void mono_d3d12::FullScreenedD3D12Window(WindowD3D12Component *component)
@@ -503,7 +519,6 @@ MONO_D3D12_API void mono_d3d12::FullScreenedD3D12Window(WindowD3D12Component *co
         riaecs::NotifyError({"Window must be created before full screening."}, RIAECS_LOG_LOC);
 
     component->isFullScreened_ = true;
-    component->needsResize_ = true;
 }
 
 MONO_D3D12_API void mono_d3d12::RestoreD3D12Window(WindowD3D12Component *component)
@@ -513,14 +528,14 @@ MONO_D3D12_API void mono_d3d12::RestoreD3D12Window(WindowD3D12Component *compone
 
     if (!SetWindowLong(component->handle_, GWL_STYLE, component->style_))
         riaecs::NotifyError({"Failed to restore window style."}, RIAECS_LOG_LOC);
+
+    component->needsRestore_ = false;
 }
 
 MONO_D3D12_API void mono_d3d12::RestoredD3D12Window(WindowD3D12Component *component)
 {
     if (!component->isCreated_)
         riaecs::NotifyError({"Window must be created before restoring."}, RIAECS_LOG_LOC);
-
-    component->needsResize_ = true;
 }
 
 MONO_D3D12_API void mono_d3d12::SetD3D12WindowPosition(WindowD3D12Component *component, UINT x, UINT y)
@@ -533,6 +548,8 @@ MONO_D3D12_API void mono_d3d12::SetD3D12WindowPosition(WindowD3D12Component *com
 
     if (!SetWindowPos(component->handle_, nullptr, x, y, 0, 0, SWP_NOSIZE | SWP_NOZORDER))
         riaecs::NotifyError({"Failed to set window position."}, RIAECS_LOG_LOC);
+
+    component->needsMove_ = false;
 }
 
 MONO_D3D12_API void mono_d3d12::MovedD3D12Window(WindowD3D12Component *component)

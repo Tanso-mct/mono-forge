@@ -45,9 +45,21 @@ namespace mono_d3d12
         bool isFullScreened_ = false;
 
         bool needsCreate_ = false;
-        bool needsShow_ = false;
-        bool needsResize_ = false;
         bool needsDestroy_ = false;
+        bool needsResize_ = false;
+        bool needsShow_ = false;
+        bool needsHide_ = false;
+        bool needsFocus_ = false;
+        bool needsUnFocus_ = false;
+        bool needsMaximize_ = false;
+        bool needsMinimize_ = false;
+        bool needsFullScreen_ = false;
+        bool needsRestore_ = false;
+        bool needsQuitAppWhenDestroyed_ = false;
+
+        bool needsMove_ = false;
+        UINT newPosX_ = 0;
+        UINT newPosY_ = 0;
 
         SwapChainContext swapChainContext_;
         RenderTargetContext renderTargetContext_;
@@ -55,7 +67,7 @@ namespace mono_d3d12
     };
     extern MONO_D3D12_API riaecs::ComponentRegistrar<WindowD3D12Component, WindowD3D12ComponentMaxCount> WindowD3D12ComponentID;
 
-    MONO_D3D12_API void CreateD3D12Window(WindowD3D12Component *component, WNDCLASSEX &wc);
+    MONO_D3D12_API void CreateD3D12Window(WindowD3D12Component *component);
 
     MONO_D3D12_API void DestroyD3D12Window(WindowD3D12Component *component);
     MONO_D3D12_API void DestroyedD3D12Window(WindowD3D12Component *component);

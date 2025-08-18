@@ -20,7 +20,7 @@ namespace riaecs
         Log() = default;
         virtual ~Log() = default;
 
-        static void OutToConsole(std::string_view msg, const char *color);
+        static void OutToConsole(std::string_view msg, const char *color = CONSOLE_TEXT_COLOR_DEFAULT);
         static void OutToWindow(std::string_view msg, std::string_view title);
         static void OutToErrorWindow(std::string_view msg, std::string_view title);
     };
