@@ -1,0 +1,31 @@
+﻿<mxfile host="65bd71144e">
+    <diagram id="CnXhA2U9izJTP4BU_nGH" name="ページ1">
+        <mxGraphModel dx="1114" dy="647" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="14" style="edgeStyle=elbowEdgeStyle;shape=connector;rounded=1;elbow=vertical;html=1;strokeColor=default;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;endArrow=classic;" edge="1" parent="1" source="2" target="6">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="2" value="mono-forge(DLL)&lt;div&gt;ゲームエンジン本体&lt;/div&gt;&lt;div&gt;これに以下らを登録する&lt;/div&gt;&lt;div&gt;・plugin&lt;/div&gt;&lt;div&gt;・editor&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;登録後、対象のVisual Studioプロジェクトを選択し、エンジン側がコードを編集する&lt;/div&gt;" style="verticalAlign=top;align=left;spacingTop=8;spacingLeft=2;spacingRight=12;shape=cube;size=10;direction=south;fontStyle=4;html=1;whiteSpace=wrap;" vertex="1" parent="1">
+                    <mxGeometry x="80" y="200" width="240" height="160" as="geometry"/>
+                </mxCell>
+                <mxCell id="6" value="develop-game(EXE)&lt;div&gt;mono-forgeによりコードが作成、mono-forgeに登録されている、すべてのpluginがリンクされることでEXEになる&lt;/div&gt;" style="verticalAlign=top;align=left;spacingTop=8;spacingLeft=2;spacingRight=12;shape=cube;size=10;direction=south;fontStyle=4;html=1;whiteSpace=wrap;" vertex="1" parent="1">
+                    <mxGeometry x="360" y="200" width="240" height="160" as="geometry"/>
+                </mxCell>
+                <mxCell id="9" style="edgeStyle=elbowEdgeStyle;html=1;elbow=vertical;" edge="1" parent="1" source="7" target="2">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="7" value="plugin(DLL)&lt;div&gt;以下らはmono-forgeに登録するために、指定のフォーマットでのjsonファイルを用意する必要がある&lt;/div&gt;&lt;div&gt;・Component&lt;/div&gt;&lt;div&gt;・System&lt;/div&gt;&lt;div&gt;・Prefab&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;これらのjsonファイルをmono-forge側が読み込むことで使用することが可能&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="verticalAlign=top;align=left;spacingTop=8;spacingLeft=2;spacingRight=12;shape=cube;size=10;direction=south;fontStyle=4;html=1;whiteSpace=wrap;" vertex="1" parent="1">
+                    <mxGeometry x="360" y="400" width="240" height="160" as="geometry"/>
+                </mxCell>
+                <mxCell id="13" style="edgeStyle=elbowEdgeStyle;shape=connector;rounded=1;elbow=vertical;html=1;strokeColor=default;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;endArrow=classic;" edge="1" parent="1" source="8" target="2">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="8" value="editor(DLL)&lt;div&gt;pluginとセットで登録する&lt;/div&gt;&lt;div&gt;以下らで、mono-forge既定のeditorでは機能が足りない場合に、独自のeditorをmono-forgeに追加することができる&lt;/div&gt;&lt;div&gt;・Component&lt;/div&gt;&lt;div&gt;・Prefab&lt;/div&gt;" style="verticalAlign=top;align=left;spacingTop=8;spacingLeft=2;spacingRight=12;shape=cube;size=10;direction=south;fontStyle=4;html=1;whiteSpace=wrap;" vertex="1" parent="1">
+                    <mxGeometry x="80" y="400" width="240" height="160" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
