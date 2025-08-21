@@ -3,9 +3,11 @@
 #include "riaecs/riaecs.h"
 
 #include "mono_d3d12/include/device_resources.h"
+#include "mono_d3d12/include/window_message_state.h"
 
 #include <Windows.h>
 #include <shared_mutex>
+#include <vector>
 
 namespace mono_d3d12
 {
@@ -63,6 +65,9 @@ namespace mono_d3d12
         SwapChainContext swapChainContext_;
         RenderTargetContext renderTargetContext_;
         FenceContext fenceContext_;
+
+        std::vector<WindowMessage> keyboardMessages_;
+        std::vector<WindowMessage> mouseMessages_;
     };
     extern MONO_D3D12_API riaecs::ComponentRegistrar<WindowD3D12Component, WindowD3D12ComponentMaxCount> ComponentWindowD3D12ID;
 

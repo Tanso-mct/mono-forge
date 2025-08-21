@@ -91,10 +91,34 @@ TEST(WindowD3D12, Create)
                 mono_d3d12::WindowMessageState& messageState = mono_d3d12::WindowMessageState::GetInstance();
                 std::vector<mono_d3d12::WindowMessage> windowMessages = messageState.TakeMessages(windowComponent.handle_);
 
+                // Reset the input messages for the window
+                windowComponent.keyboardMessages_.clear();
+                windowComponent.mouseMessages_.clear();
+
                 for (const mono_d3d12::WindowMessage& windowMessage : windowMessages)
                 {
                     switch (windowMessage.message)
                     {
+                    case WM_KEYDOWN:
+                    case WM_SYSKEYDOWN:
+                    case WM_KEYUP:
+                    case WM_SYSKEYUP:
+                        windowComponent.keyboardMessages_.emplace_back(windowMessage);
+                        break;
+
+                    case WM_MOUSEMOVE:
+                    case WM_MOUSEWHEEL:
+                    case WM_LBUTTONDOWN:
+                    case WM_LBUTTONUP:
+                    case WM_RBUTTONDOWN:
+                    case WM_RBUTTONUP:
+                    case WM_MBUTTONDOWN:
+                    case WM_MBUTTONUP:
+                    case WM_XBUTTONDOWN:
+                    case WM_XBUTTONUP:
+                        windowComponent.mouseMessages_.emplace_back(windowMessage);
+                        break;
+
                     case WM_DESTROY:
                         mono_d3d12::DestroyedD3D12Window(&windowComponent);
                         if (windowComponent.needsQuitAppWhenDestroyed_)
