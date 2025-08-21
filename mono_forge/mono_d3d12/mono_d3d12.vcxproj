@@ -145,6 +145,7 @@
     <ClInclude Include="include\d3d12_utils.h" />
     <ClInclude Include="include\device_resources.h" />
     <ClInclude Include="include\dll_config.h" />
+    <ClInclude Include="include\prefab_window_d3d12.h" />
     <ClInclude Include="include\system_window_d3d12.h" />
     <ClInclude Include="include\window_message_state.h" />
     <ClInclude Include="mono_d3d12.h" />
@@ -160,6 +161,7 @@
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <ClCompile Include="src\prefab_window_d3d12.cpp" />
     <ClCompile Include="src\system_window_d3d12.cpp" />
     <ClCompile Include="src\window_message_state.cpp" />
   </ItemGroup>

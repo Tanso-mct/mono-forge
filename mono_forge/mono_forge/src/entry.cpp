@@ -3,6 +3,54 @@
 #pragma comment(lib, "riaecs.lib")
 #pragma comment(lib, "mem_alloc_fixed_block.lib")
 
+#include "mono_d3d12/mono_d3d12.h"
+#pragma comment(lib, "mono_d3d12.lib")
+
+#include "mono_forge/include/game_loop.h"
+
+namespace mono_forge
+{
+    class InitialSystemListFactory : public riaecs::ISystemListFactory
+    {
+    public:
+        std::unique_ptr<riaecs::ISystemList> Create() const override
+        {
+            std::unique_ptr<riaecs::ISystemList> systemList = std::make_unique<riaecs::SystemList>();
+            systemList->Add(mono_d3d12::SystemWindowD3D12ID());
+
+            return systemList;
+        }
+
+        void Destroy(std::unique_ptr<riaecs::ISystemList> product) const override
+        {
+            product.reset();
+        }
+
+        size_t GetProductSize() const override
+        {
+            return sizeof(riaecs::SystemList);
+        }
+    };
+
+    void CreateInitialEntities(riaecs::IECSWorld &world, riaecs::IAssetContainer &assetCont)
+    {
+        /***************************************************************************************************************
+         * Create window
+        /**************************************************************************************************************/
+
+        riaecs::Entity windowEntity;
+        {
+            mono_d3d12::PrefabWindowD3D12 prefabWindow;
+            prefabWindow.SetWindowName(L"Test Window");
+            prefabWindow.SetWindowClassName(L"TestWindowClass");
+            windowEntity = prefabWindow.Instantiate(world, assetCont);
+        }
+    }
+
+} // namespace mono_forge
+
+
+
 int APIENTRY wWinMain
 (
     _In_ HINSTANCE hInstance,
@@ -22,37 +70,47 @@ int APIENTRY wWinMain
     ecsWorld->CreateWorld();
 
     /*******************************************************************************************************************
+     * Create System loop
+    /******************************************************************************************************************/
+
+    std::unique_ptr<riaecs::ISystemLoop> systemLoop = std::make_unique<riaecs::SystemLoop>();
+    systemLoop->SetSystemListFactory(std::make_unique<mono_forge::InitialSystemListFactory>());
+    systemLoop->SetSystemLoopCommandQueueFactory(std::make_unique<riaecs::EmptySystemLoopCommandQueueFactory>());
+    systemLoop->Initialize();
+
+    /*******************************************************************************************************************
      * Create Asset Container
     /******************************************************************************************************************/
 
     std::unique_ptr<riaecs::IAssetContainer> assetContainer = std::make_unique<riaecs::AssetContainer>();
+    assetContainer->Create(riaecs::gAssetSourceRegistry->GetCount());
 
     /*******************************************************************************************************************
      * Create initialize entities
     /******************************************************************************************************************/
 
-    // TODO: Replace with actual entity creation and component addition logic
+    mono_forge::CreateInitialEntities(*ecsWorld, *assetContainer);
 
     /*******************************************************************************************************************
-     * Create System loop and run it
+     * Run game loop
     /******************************************************************************************************************/
 
-    std::unique_ptr<riaecs::ISystemLoop> systemLoop = std::make_unique<riaecs::SystemLoop>();
-
-    // TODO: Replace with actual system list factory
-    systemLoop->SetSystemListFactory(std::make_unique<riaecs::EmptySystemListFactory>());
-
-    systemLoop->SetSystemLoopCommandQueueFactory(std::make_unique<riaecs::EmptySystemLoopCommandQueueFactory>());
-
-    // Execute the system loop
-    systemLoop->Initialize();
-    systemLoop->Run(*ecsWorld, *assetContainer);
+    mono_forge::GameLoop gameLoop;
+    gameLoop.Run(*systemLoop, *ecsWorld, *assetContainer);
 
     /*******************************************************************************************************************
-     * Cleanup
+     * Run message loop
     /******************************************************************************************************************/
-    
-    ecsWorld->DestroyWorld();
+
+    MSG msg;
+    while (GetMessage(&msg, nullptr, 0, 0))
+    {
+        TranslateMessage(&msg);
+        DispatchMessage(&msg);
+
+        if (!gameLoop.IsRunning())
+            PostQuitMessage(0);
+    }
 
     return 0;
 }

@@ -64,7 +64,7 @@ namespace mono_d3d12
         RenderTargetContext renderTargetContext_;
         FenceContext fenceContext_;
     };
-    extern MONO_D3D12_API riaecs::ComponentRegistrar<WindowD3D12Component, WindowD3D12ComponentMaxCount> WindowD3D12ComponentID;
+    extern MONO_D3D12_API riaecs::ComponentRegistrar<WindowD3D12Component, WindowD3D12ComponentMaxCount> ComponentWindowD3D12ID;
 
     MONO_D3D12_API void CreateD3D12Window(WindowD3D12Component *component);
 

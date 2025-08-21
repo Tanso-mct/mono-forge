@@ -140,18 +140,23 @@
     <ProjectReference Include="..\mem_alloc_fixed_block\mem_alloc_fixed_block.vcxproj">
       <Project>{c5895147-47e8-47ce-9cf8-b4bee2a2524f}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\mono_d3d12\mono_d3d12.vcxproj">
+      <Project>{5ff342a5-dfda-4463-9388-55c38e89ae42}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\riaecs\riaecs.vcxproj">
       <Project>{ca1b6480-e0d8-4ef7-bcc8-87b2a51b9f20}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\entry.cpp" />
+    <ClCompile Include="src\game_loop.cpp" />
     <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\game_loop.h" />
     <ClInclude Include="src\pch.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

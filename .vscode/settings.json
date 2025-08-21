@@ -72,7 +72,10 @@
         "functional": "cpp",
         "future": "cpp",
         "coroutine": "cpp",
-        "resumable": "cpp"
+        "resumable": "cpp",
+        "array": "cpp",
+        "ranges": "cpp",
+        "span": "cpp"
     },
     "cSpell.words": [
         "IECS",

@@ -42,7 +42,7 @@ mono_d3d12::WindowD3D12Component::~WindowD3D12Component()
 }
 
 MONO_D3D12_API riaecs::ComponentRegistrar
-<mono_d3d12::WindowD3D12Component, mono_d3d12::WindowD3D12ComponentMaxCount> mono_d3d12::WindowD3D12ComponentID;
+<mono_d3d12::WindowD3D12Component, mono_d3d12::WindowD3D12ComponentMaxCount> mono_d3d12::ComponentWindowD3D12ID;
 
 MONO_D3D12_API void mono_d3d12::CreateD3D12Window(WindowD3D12Component *component)
 {

@@ -61,6 +61,13 @@ namespace riaecs
         return ReadOnlyObject<T*>(std::move(componentData.TakeLock()), data);
     }
 
+    class IPrefab
+    {
+    public:
+        virtual ~IPrefab() = default;
+        virtual Entity Instantiate(IECSWorld &world, IAssetContainer &assetCont) = 0;
+    };
+
     class ISystemLoopCommandQueue;
 
     class ISystem

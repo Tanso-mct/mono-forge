@@ -39,10 +39,10 @@ bool mono_d3d12::SystemWindowD3D12::Update
     riaecs::IECSWorld &world, riaecs::IAssetContainer &assetCont, 
     riaecs::ISystemLoopCommandQueue &systemLoopCmdQueue
 ){
-    for (riaecs::Entity entity : world.View(mono_d3d12::WindowD3D12ComponentID())())
+    for (riaecs::Entity entity : world.View(mono_d3d12::ComponentWindowD3D12ID())())
     {
         riaecs::ReadOnlyObject<mono_d3d12::WindowD3D12Component*> window
-        = riaecs::GetComponent<mono_d3d12::WindowD3D12Component>(world, entity, mono_d3d12::WindowD3D12ComponentID());
+        = riaecs::GetComponent<mono_d3d12::WindowD3D12Component>(world, entity, mono_d3d12::ComponentWindowD3D12ID());
 
         std::unique_lock<std::shared_mutex> windowLock(window()->mutex_);
 
