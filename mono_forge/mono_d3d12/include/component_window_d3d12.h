@@ -27,7 +27,7 @@ namespace mono_d3d12
         HINSTANCE instance_ = nullptr;
         HWND parentHandle_ = nullptr;
 
-        DWORD style_ = WS_OVERLAPPEDWINDOW | WS_VISIBLE;
+        DWORD style_ = WS_OVERLAPPEDWINDOW;
         std::wstring name_ = L"Window";
         std::wstring className_ = L"WindowClass";
         UINT posX_ = CW_USEDEFAULT;
@@ -44,7 +44,6 @@ namespace mono_d3d12
         bool isMinimized_ = false;
         bool isFullScreened_ = false;
 
-        bool needsCreate_ = false;
         bool needsDestroy_ = false;
         bool needsResize_ = false;
         bool needsShow_ = false;

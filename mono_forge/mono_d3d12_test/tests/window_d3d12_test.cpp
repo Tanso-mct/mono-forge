@@ -22,7 +22,7 @@ TEST(WindowD3D12, Create)
     windowComponent.height_ = 600;
     windowComponent.posX_ = 100;
     windowComponent.posY_ = 100;
-    windowComponent.needsCreate_ = true;
+    windowComponent.needsShow_ = true;
     windowComponent.needsQuitAppWhenDestroyed_ = true;
 
     const UINT FRAME_COUNT = 2;
@@ -35,8 +35,7 @@ TEST(WindowD3D12, Create)
      * Create the window on main thread
     /******************************************************************************************************************/
 
-    // if (windowComponent.needsCreate_)
-    //     mono_d3d12::CreateD3D12Window(&windowComponent);
+    mono_d3d12::CreateD3D12Window(&windowComponent);
 
     /*******************************************************************************************************************
      * Run the main loop to process messages

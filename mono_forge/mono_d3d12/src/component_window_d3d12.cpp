@@ -32,7 +32,6 @@ mono_d3d12::WindowD3D12Component::~WindowD3D12Component()
     isMinimized_ = false;
     isFullScreened_ = false;
 
-    needsCreate_ = false;
     needsShow_ = false;
     needsResize_ = false;
     needsDestroy_ = false;
@@ -74,9 +73,7 @@ MONO_D3D12_API void mono_d3d12::CreateD3D12Window(WindowD3D12Component *componen
         riaecs::NotifyError({"Failed to create window."}, RIAECS_LOG_LOC);
 
     component->instance_ = wc.hInstance;
-
     component->isCreated_ = true;
-    component->needsCreate_ = false;
 
     if (!UpdateWindow(component->handle_))
         riaecs::NotifyError({"Failed to update window."}, RIAECS_LOG_LOC);
@@ -387,9 +384,7 @@ MONO_D3D12_API void mono_d3d12::ShowD3D12Window(WindowD3D12Component *component)
     if (!component->isCreated_)
         riaecs::NotifyError({"Window must be created before showing."}, RIAECS_LOG_LOC);
 
-    if (!ShowWindow(component->handle_, SW_SHOW))
-        riaecs::NotifyError({"Failed to show window."}, RIAECS_LOG_LOC);
-
+    ShowWindow(component->handle_, SW_SHOW);
     component->needsShow_ = false;
 }
 
@@ -398,9 +393,7 @@ MONO_D3D12_API void mono_d3d12::HideD3D12Window(WindowD3D12Component *component)
     if (!component->isCreated_)
         riaecs::NotifyError({"Window must be created before hiding."}, RIAECS_LOG_LOC);
 
-    if (!ShowWindow(component->handle_, SW_HIDE))
-        riaecs::NotifyError({"Failed to hide window."}, RIAECS_LOG_LOC);
-
+    ShowWindow(component->handle_, SW_HIDE);
     component->needsHide_ = false;
 }
 
