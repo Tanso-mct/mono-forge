@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{e7a57a1f-8ffb-41be-9021-031d5d759ce1}</ProjectGuid>
-    <RootNamespace>monoforgeplugintemplate</RootNamespace>
+    <ProjectGuid>{624775d1-6dea-4b15-96bb-925d64db249e}</ProjectGuid>
+    <RootNamespace>mono_input_monitor</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -110,7 +110,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;MONOFORGEPLUGINTEMPLATE_EXPORTS;_WINDOWS;_USRDLL;WIN32_LEAN_AND_MEAN;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;MONOINPUTMONITOR_EXPORTS;_WINDOWS;_USRDLL;WIN32_LEAN_AND_MEAN;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>$(ProjectName)\src\pch.h</PrecompiledHeaderFile>
@@ -128,7 +128,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;MONOFORGEPLUGINTEMPLATE_EXPORTS;_WINDOWS;_USRDLL;WIN32_LEAN_AND_MEAN;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;MONOINPUTMONITOR_EXPORTS;_WINDOWS;_USRDLL;WIN32_LEAN_AND_MEAN;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>$(ProjectName)\src\pch.h</PrecompiledHeaderFile>
@@ -142,9 +142,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="include\dll_config.h" />
+    <ClInclude Include="include\input.h" />
+    <ClInclude Include="include\keyboard_monitor.h" />
+    <ClInclude Include="include\mouse_monitor.h" />
     <ClInclude Include="src\pch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\keyboard_monitor.cpp" />
+    <ClCompile Include="src\mouse_monitor.cpp" />
     <ClCompile Include="src\phc.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
@@ -154,6 +159,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\riaecs\riaecs.vcxproj">
+      <Project>{ca1b6480-e0d8-4ef7-bcc8-87b2a51b9f20}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
