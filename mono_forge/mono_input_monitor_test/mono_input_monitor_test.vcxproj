@@ -116,6 +116,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="tests\keyboard_test.cpp" />
+    <ClCompile Include="tests\mouse_test.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\mono_input_monitor\mono_input_monitor.vcxproj">

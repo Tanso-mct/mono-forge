@@ -146,10 +146,10 @@ MONO_INPUT_MONITOR_API void mono_input_monitor::EditInputState
     // Casted index for the key code
     size_t index = static_cast<size_t>(keyCode);
 
-    if (inputType == mono_input_monitor::InputType::Down && state.inputStates[index] != mono_input_monitor::InputType::Press)
-        state.inputStates[index] = mono_input_monitor::InputType::Down;
+    if (inputType == mono_input_monitor::InputType::Down && state.inputStates_[index] != mono_input_monitor::InputType::Press)
+        state.inputStates_[index] = mono_input_monitor::InputType::Down;
     else if (inputType == mono_input_monitor::InputType::Up)
-        state.inputStates[index] = mono_input_monitor::InputType::Up;
+        state.inputStates_[index] = mono_input_monitor::InputType::Up;
 }
 
 MONO_INPUT_MONITOR_API void mono_input_monitor::UpdateInputState(KeyboardInputState &state)
@@ -157,17 +157,17 @@ MONO_INPUT_MONITOR_API void mono_input_monitor::UpdateInputState(KeyboardInputSt
     for (size_t i = 0; i < static_cast<size_t>(KeyCode::Size); ++i)
     {
         // After the key is pressed
-        if (state.inputStates[i] == mono_input_monitor::InputType::Down)
-            state.inputStates[i] = mono_input_monitor::InputType::Press; // Change to pressed state
+        if (state.inputStates_[i] == mono_input_monitor::InputType::Down)
+            state.inputStates_[i] = mono_input_monitor::InputType::Press; // Change to pressed state
 
         // After the key is up
-        if (state.inputStates[i] == mono_input_monitor::InputType::Up)
+        if (state.inputStates_[i] == mono_input_monitor::InputType::Up)
         {
-            state.inputStates[i] = mono_input_monitor::InputType::None; // Reset to none state
+            state.inputStates_[i] = mono_input_monitor::InputType::None; // Reset to none state
 
-            // Set the previous
-            state.lastKeyCode = static_cast<KeyCode>(i);
-            state.lastKeyPressTime = std::chrono::high_resolution_clock::now();
+            // Set the last
+            state.lastKeyCode_ = static_cast<KeyCode>(i);
+            state.lastKeyPressTime_ = std::chrono::high_resolution_clock::now();
         }
     }
 }
@@ -175,10 +175,10 @@ MONO_INPUT_MONITOR_API void mono_input_monitor::UpdateInputState(KeyboardInputSt
 MONO_INPUT_MONITOR_API void mono_input_monitor::ResetInputState(KeyboardInputState &state)
 {
     for (size_t i = 0; i < static_cast<size_t>(KeyCode::Size); ++i)
-        state.inputStates[i] = mono_input_monitor::InputType::None; // Reset all states to None
+        state.inputStates_[i] = mono_input_monitor::InputType::None; // Reset all states to None
 
-    state.lastKeyCode = KeyCode::Null; // Reset last key code
-    state.lastKeyPressTime = std::chrono::high_resolution_clock::now(); // Reset last key press time
+    state.lastKeyCode_ = KeyCode::Null; // Reset last key code
+    state.lastKeyPressTime_ = std::chrono::high_resolution_clock::now(); // Reset last key press time
 }
 
 MONO_INPUT_MONITOR_API bool mono_input_monitor::GetKey(KeyboardInputState &state, KeyCode keyCode)
@@ -190,8 +190,8 @@ MONO_INPUT_MONITOR_API bool mono_input_monitor::GetKey(KeyboardInputState &state
     size_t index = static_cast<size_t>(keyCode);
 
     if (
-        state.inputStates[index] == mono_input_monitor::InputType::Press || 
-        state.inputStates[index] == mono_input_monitor::InputType::Down
+        state.inputStates_[index] == mono_input_monitor::InputType::Press || 
+        state.inputStates_[index] == mono_input_monitor::InputType::Down
     ) return true; // If the key is pressed or down, return true
 
     // If the key is not pressed or down, return false
@@ -206,7 +206,7 @@ MONO_INPUT_MONITOR_API bool mono_input_monitor::GetKeyDown(KeyboardInputState &s
     // Get the casted index for the key code
     size_t index = static_cast<size_t>(keyCode);
 
-    if (state.inputStates[index] == mono_input_monitor::InputType::Down)
+    if (state.inputStates_[index] == mono_input_monitor::InputType::Down)
         return true; // If the key is down, return true
 
     // If the key is not down, return false
@@ -221,7 +221,7 @@ MONO_INPUT_MONITOR_API bool mono_input_monitor::GetKeyUp(KeyboardInputState &sta
     // Get the casted index for the key code
     size_t index = static_cast<size_t>(keyCode);
 
-    if (state.inputStates[index] == mono_input_monitor::InputType::Up)
+    if (state.inputStates_[index] == mono_input_monitor::InputType::Up)
         return true; // If the key is up, return true
 
     // If the key is not up, return false
@@ -236,13 +236,13 @@ MONO_INPUT_MONITOR_API bool mono_input_monitor::GetKeyDoubleTap(KeyboardInputSta
     // Get the casted index for the key code
     size_t index = static_cast<size_t>(keyCode);
 
-    if (state.inputStates[index] != mono_input_monitor::InputType::Up)
+    if (state.inputStates_[index] != mono_input_monitor::InputType::Up)
         return false; // Double-tap checked only when released
 
     if (
-        state.lastKeyCode == keyCode &&
+        state.lastKeyCode_ == keyCode &&
         std::chrono::duration<double>(
-            std::chrono::high_resolution_clock::now() - state.lastKeyPressTime
+            std::chrono::high_resolution_clock::now() - state.lastKeyPressTime_
         ).count() <= threshold
     ) return true; // If the last key is the same and the time difference is within the threshold, this is a double-tap
 

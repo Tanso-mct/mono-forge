@@ -51,9 +51,9 @@ namespace mono_input_monitor
 
     struct KeyboardInputState
     {
-        InputType inputStates[static_cast<size_t>(KeyCode::Size)];
-        KeyCode lastKeyCode = KeyCode::Null;
-        std::chrono::high_resolution_clock::time_point lastKeyPressTime;
+        InputType inputStates_[static_cast<size_t>(KeyCode::Size)];
+        KeyCode lastKeyCode_ = KeyCode::Null;
+        std::chrono::high_resolution_clock::time_point lastKeyPressTime_;
     };
 
     MONO_INPUT_MONITOR_API void EditInputState(KeyboardInputState& state, InputType inputType, KeyCode keyCode);

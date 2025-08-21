@@ -39,16 +39,16 @@ TEST(Keyboard, InputState)
     mono_input_monitor::KeyboardInputState inputState;
 
     mono_input_monitor::EditInputState(inputState, mono_input_monitor::InputType::Down, mono_input_monitor::KeyCode::A);
-    EXPECT_EQ(inputState.inputStates[static_cast<size_t>(mono_input_monitor::KeyCode::A)], mono_input_monitor::InputType::Down);
+    EXPECT_EQ(inputState.inputStates_[static_cast<size_t>(mono_input_monitor::KeyCode::A)], mono_input_monitor::InputType::Down);
 
     mono_input_monitor::UpdateInputState(inputState);
-    EXPECT_EQ(inputState.inputStates[static_cast<size_t>(mono_input_monitor::KeyCode::A)], mono_input_monitor::InputType::Press);
+    EXPECT_EQ(inputState.inputStates_[static_cast<size_t>(mono_input_monitor::KeyCode::A)], mono_input_monitor::InputType::Press);
 
     mono_input_monitor::EditInputState(inputState, mono_input_monitor::InputType::Up, mono_input_monitor::KeyCode::A);
-    EXPECT_EQ(inputState.inputStates[static_cast<size_t>(mono_input_monitor::KeyCode::A)], mono_input_monitor::InputType::Up);
+    EXPECT_EQ(inputState.inputStates_[static_cast<size_t>(mono_input_monitor::KeyCode::A)], mono_input_monitor::InputType::Up);
 
     mono_input_monitor::UpdateInputState(inputState);
-    EXPECT_EQ(inputState.inputStates[static_cast<size_t>(mono_input_monitor::KeyCode::A)], mono_input_monitor::InputType::None);
+    EXPECT_EQ(inputState.inputStates_[static_cast<size_t>(mono_input_monitor::KeyCode::A)], mono_input_monitor::InputType::None);
 }
 
 TEST(Keyboard, GetKeyStates)
@@ -68,11 +68,25 @@ TEST(Keyboard, GetKeyStates)
     EXPECT_FALSE(mono_input_monitor::GetKeyDown(inputState, mono_input_monitor::KeyCode::A));
     EXPECT_FALSE(mono_input_monitor::GetKeyUp(inputState, mono_input_monitor::KeyCode::A));
 
+    mono_input_monitor::UpdateInputState(inputState);
+
     // Simulate key up
     mono_input_monitor::EditInputState(inputState, mono_input_monitor::InputType::Up, mono_input_monitor::KeyCode::A);
     EXPECT_FALSE(mono_input_monitor::GetKey(inputState, mono_input_monitor::KeyCode::A));
     EXPECT_FALSE(mono_input_monitor::GetKeyDown(inputState, mono_input_monitor::KeyCode::A));
     EXPECT_TRUE(mono_input_monitor::GetKeyUp(inputState, mono_input_monitor::KeyCode::A));
+
+    mono_input_monitor::UpdateInputState(inputState);
+
+    // Simulate key down and then up again
+    mono_input_monitor::EditInputState(inputState, mono_input_monitor::InputType::Down, mono_input_monitor::KeyCode::A);
+    mono_input_monitor::UpdateInputState(inputState);
+
+    mono_input_monitor::EditInputState(inputState, mono_input_monitor::InputType::Up, mono_input_monitor::KeyCode::A);
+    EXPECT_FALSE(mono_input_monitor::GetKey(inputState, mono_input_monitor::KeyCode::A));
+    EXPECT_FALSE(mono_input_monitor::GetKeyDown(inputState, mono_input_monitor::KeyCode::A));
+    EXPECT_TRUE(mono_input_monitor::GetKeyUp(inputState, mono_input_monitor::KeyCode::A));
+    EXPECT_TRUE(mono_input_monitor::GetKeyDoubleTap(inputState, mono_input_monitor::KeyCode::A));
 
     mono_input_monitor::UpdateInputState(inputState);
 

@@ -5,6 +5,9 @@
     <ClCompile Include="tests\keyboard_test.cpp">
       <Filter>tests</Filter>
     </ClCompile>
+    <ClCompile Include="tests\mouse_test.cpp">
+      <Filter>tests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
