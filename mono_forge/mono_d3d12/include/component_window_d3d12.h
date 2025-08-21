@@ -5,6 +5,8 @@
 #include "mono_d3d12/include/device_resources.h"
 #include "mono_d3d12/include/window_message_state.h"
 
+#include "mono_input_monitor/input_monitor.h"
+
 #include <Windows.h>
 #include <shared_mutex>
 #include <vector>
@@ -66,8 +68,8 @@ namespace mono_d3d12
         RenderTargetContext renderTargetContext_;
         FenceContext fenceContext_;
 
-        std::vector<WindowMessage> keyboardMessages_;
-        std::vector<WindowMessage> mouseMessages_;
+        mono_input_monitor::KeyboardInputState keyboardState_;
+        mono_input_monitor::MouseInputState mouseState_;
     };
     extern MONO_D3D12_API riaecs::ComponentRegistrar<WindowD3D12Component, WindowD3D12ComponentMaxCount> ComponentWindowD3D12ID;
 

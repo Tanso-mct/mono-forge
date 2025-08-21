@@ -12,9 +12,9 @@ mono_input_monitor::KeyInputConverter::KeyInputConverter()
     inputTypeMap_[WM_SYSKEYUP] = mono_input_monitor::InputType::Up;
 }
 
-mono_input_monitor::InputType mono_input_monitor::KeyInputConverter::Convert(UINT keyCode) const
+mono_input_monitor::InputType mono_input_monitor::KeyInputConverter::Convert(UINT msg) const
 {
-    auto it = inputTypeMap_.find(keyCode);
+    auto it = inputTypeMap_.find(static_cast<UINT>(msg));
     if (it != inputTypeMap_.end())
         return it->second;
 

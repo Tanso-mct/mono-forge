@@ -40,14 +40,15 @@ TEST(Mouse, InputState)
 {
     mono_input_monitor::MouseInputState inputState;
     WPARAM wParam = 0;
+    LPARAM lParam = 0;
 
-    mono_input_monitor::EditInputState(inputState, mono_input_monitor::InputType::Down, mono_input_monitor::MouseCode::Left, wParam);
+    mono_input_monitor::EditInputState(inputState, mono_input_monitor::InputType::Down, mono_input_monitor::MouseCode::Left, wParam, lParam);
     EXPECT_EQ(inputState.inputStates_[static_cast<size_t>(mono_input_monitor::MouseCode::Left)], mono_input_monitor::InputType::Down);
 
     mono_input_monitor::UpdateInputState(inputState);
     EXPECT_EQ(inputState.inputStates_[static_cast<size_t>(mono_input_monitor::MouseCode::Left)], mono_input_monitor::InputType::Press);
 
-    mono_input_monitor::EditInputState(inputState, mono_input_monitor::InputType::Up, mono_input_monitor::MouseCode::Left, wParam);
+    mono_input_monitor::EditInputState(inputState, mono_input_monitor::InputType::Up, mono_input_monitor::MouseCode::Left, wParam, lParam);
     EXPECT_EQ(inputState.inputStates_[static_cast<size_t>(mono_input_monitor::MouseCode::Left)], mono_input_monitor::InputType::Up);
 
     mono_input_monitor::UpdateInputState(inputState);
@@ -58,9 +59,10 @@ TEST(Mouse, GetButtonStates)
 {
     mono_input_monitor::MouseInputState inputState;
     WPARAM wParam = 0;
+    LPARAM lParam = 0;
 
     // Simulate button down
-    mono_input_monitor::EditInputState(inputState, mono_input_monitor::InputType::Down, mono_input_monitor::MouseCode::Left, wParam);
+    mono_input_monitor::EditInputState(inputState, mono_input_monitor::InputType::Down, mono_input_monitor::MouseCode::Left, wParam, lParam);
     EXPECT_TRUE(mono_input_monitor::GetButton(inputState, mono_input_monitor::MouseCode::Left));
     EXPECT_TRUE(mono_input_monitor::GetButtonDown(inputState, mono_input_monitor::MouseCode::Left));
     EXPECT_FALSE(mono_input_monitor::GetButtonUp(inputState, mono_input_monitor::MouseCode::Left));
@@ -75,7 +77,7 @@ TEST(Mouse, GetButtonStates)
     mono_input_monitor::UpdateInputState(inputState);
 
     // Simulate button up
-    mono_input_monitor::EditInputState(inputState, mono_input_monitor::InputType::Up, mono_input_monitor::MouseCode::Left, wParam);
+    mono_input_monitor::EditInputState(inputState, mono_input_monitor::InputType::Up, mono_input_monitor::MouseCode::Left, wParam, lParam);
     EXPECT_FALSE(mono_input_monitor::GetButton(inputState, mono_input_monitor::MouseCode::Left));
     EXPECT_FALSE(mono_input_monitor::GetButtonDown(inputState, mono_input_monitor::MouseCode::Left));
     EXPECT_TRUE(mono_input_monitor::GetButtonUp(inputState, mono_input_monitor::MouseCode::Left));
@@ -83,10 +85,10 @@ TEST(Mouse, GetButtonStates)
     mono_input_monitor::UpdateInputState(inputState);
 
     // Simulate button down and then up again
-    mono_input_monitor::EditInputState(inputState, mono_input_monitor::InputType::Down, mono_input_monitor::MouseCode::Left, wParam);
+    mono_input_monitor::EditInputState(inputState, mono_input_monitor::InputType::Down, mono_input_monitor::MouseCode::Left, wParam, lParam);
     mono_input_monitor::UpdateInputState(inputState);
 
-    mono_input_monitor::EditInputState(inputState, mono_input_monitor::InputType::Up, mono_input_monitor::MouseCode::Left, wParam);
+    mono_input_monitor::EditInputState(inputState, mono_input_monitor::InputType::Up, mono_input_monitor::MouseCode::Left, wParam, lParam);
     EXPECT_FALSE(mono_input_monitor::GetButton(inputState, mono_input_monitor::MouseCode::Left));
     EXPECT_FALSE(mono_input_monitor::GetButtonDown(inputState, mono_input_monitor::MouseCode::Left));
     EXPECT_TRUE(mono_input_monitor::GetButtonUp(inputState, mono_input_monitor::MouseCode::Left));

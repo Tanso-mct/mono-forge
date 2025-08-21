@@ -34,7 +34,7 @@ namespace mono_input_monitor
         KeyInputConverter();
         ~KeyInputConverter() = default;
 
-        InputType Convert(UINT keyCode) const;
+        InputType Convert(UINT msg) const;
     };
 
     class MONO_INPUT_MONITOR_API KeyCodeConverter

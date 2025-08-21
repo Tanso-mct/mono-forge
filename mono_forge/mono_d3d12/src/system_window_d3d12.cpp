@@ -4,6 +4,8 @@
 #include "mono_d3d12/include/component_window_d3d12.h"
 #include "mono_d3d12/include/window_message_state.h"
 
+#pragma comment(lib, "mono_input_monitor.lib")
+
 namespace mono_d3d12
 {
 
@@ -90,9 +92,8 @@ bool mono_d3d12::SystemWindowD3D12::Update
         mono_d3d12::WindowMessageState& messageState = mono_d3d12::WindowMessageState::GetInstance();
         std::vector<mono_d3d12::WindowMessage> windowMessages = messageState.TakeMessages(window()->handle_);
 
-        // Reset the input messages for the window
-        window()->keyboardMessages_.clear();
-        window()->mouseMessages_.clear();
+        mono_input_monitor::UpdateInputState(window()->keyboardState_);
+        mono_input_monitor::UpdateInputState(window()->mouseState_);
 
         for (const mono_d3d12::WindowMessage& windowMessage : windowMessages)
         {
@@ -102,7 +103,12 @@ bool mono_d3d12::SystemWindowD3D12::Update
             case WM_SYSKEYDOWN:
             case WM_KEYUP:
             case WM_SYSKEYUP:
-                window()->keyboardMessages_.emplace_back(windowMessage);
+                mono_input_monitor::EditInputState
+                (
+                    window()->keyboardState_, 
+                    keyInputConverter_.Convert(windowMessage.message), 
+                    keyCodeConverter_.Convert(windowMessage.wParam, windowMessage.lParam)
+                );
                 break;
 
             case WM_MOUSEMOVE:
@@ -115,7 +121,13 @@ bool mono_d3d12::SystemWindowD3D12::Update
             case WM_MBUTTONUP:
             case WM_XBUTTONDOWN:
             case WM_XBUTTONUP:
-                window()->mouseMessages_.emplace_back(windowMessage);
+                mono_input_monitor::EditInputState
+                (
+                    window()->mouseState_, 
+                    mouseInputConverter_.Convert(windowMessage.message), 
+                    mouseCodeConverter_.Convert(windowMessage.message, windowMessage.wParam), 
+                    windowMessage.wParam, windowMessage.lParam
+                );
                 break;
 
             case WM_DESTROY:

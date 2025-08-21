@@ -169,6 +169,9 @@
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\mono_input_monitor\mono_input_monitor.vcxproj">
+      <Project>{624775d1-6dea-4b15-96bb-925d64db249e}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\riaecs\riaecs.vcxproj">
       <Project>{ca1b6480-e0d8-4ef7-bcc8-87b2a51b9f20}</Project>
     </ProjectReference>

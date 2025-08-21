@@ -16,9 +16,9 @@ mono_input_monitor::MouseInputConverter::MouseInputConverter()
     inputTypeMap_[WM_XBUTTONUP] = mono_input_monitor::InputType::Up;
 }
 
-mono_input_monitor::InputType mono_input_monitor::MouseInputConverter::Convert(UINT mouseMessage) const
+mono_input_monitor::InputType mono_input_monitor::MouseInputConverter::Convert(UINT msg) const
 {
-    auto it = inputTypeMap_.find(mouseMessage);
+    auto it = inputTypeMap_.find(msg);
     if (it != inputTypeMap_.end())
         return it->second;
 
@@ -76,7 +76,7 @@ mono_input_monitor::MouseCode mono_input_monitor::MouseCodeConverter::Convert(UI
 
 MONO_INPUT_MONITOR_API void mono_input_monitor::EditInputState
 (
-    MouseInputState &state, InputType inputType, MouseCode mouseCode, WPARAM wParam
+    MouseInputState &state, InputType inputType, MouseCode mouseCode, WPARAM wParam, LPARAM lParam
 ){
     // If message is WM_MOUSEWHEEL
     if (mouseCode == MouseCode::Wheel)
@@ -88,11 +88,11 @@ MONO_INPUT_MONITOR_API void mono_input_monitor::EditInputState
     // If message is WM_MOUSEMOVE
     if (mouseCode == MouseCode::Move)
     {
-        state.deltaPosition_.x = ((int)(short)LOWORD(wParam)) - state.position_.x;
-        state.deltaPosition_.y = ((int)(short)HIWORD(wParam)) - state.position_.y;
+        state.deltaPosition_.x = ((int)(short)LOWORD(lParam)) - state.position_.x;
+        state.deltaPosition_.y = ((int)(short)HIWORD(lParam)) - state.position_.y;
 
-        state.position_.x = ((int)(short)LOWORD(wParam));
-        state.position_.y = ((int)(short)HIWORD(wParam));
+        state.position_.x = ((int)(short)LOWORD(lParam));
+        state.position_.y = ((int)(short)HIWORD(lParam));
 
         return;
     }

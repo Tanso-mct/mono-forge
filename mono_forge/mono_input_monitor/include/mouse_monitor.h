@@ -24,7 +24,7 @@ namespace mono_input_monitor
         MouseInputConverter();
         ~MouseInputConverter() = default;
 
-        InputType Convert(UINT mouseMessage) const;
+        InputType Convert(UINT msg) const;
     };
 
     class MONO_INPUT_MONITOR_API MouseCodeConverter
@@ -50,7 +50,11 @@ namespace mono_input_monitor
         int wheelDelta_;
     };
 
-    MONO_INPUT_MONITOR_API void EditInputState(MouseInputState& state, InputType inputType, MouseCode mouseCode, WPARAM wParam);
+    MONO_INPUT_MONITOR_API void EditInputState
+    (
+        MouseInputState& state, InputType inputType, MouseCode mouseCode, 
+        WPARAM wParam, LPARAM lParam
+    );
     MONO_INPUT_MONITOR_API void UpdateInputState(MouseInputState& state);
     MONO_INPUT_MONITOR_API void ResetInputState(MouseInputState& state);
 
