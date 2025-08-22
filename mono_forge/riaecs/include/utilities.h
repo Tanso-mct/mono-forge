@@ -21,4 +21,9 @@ namespace riaecs
         const std::string &file, int line, const std::string &function
     );
 
+    RIAECS_API void CreateStandardConsole
+    (
+        const std::wstring &consoleName = L"Console", short fontSize = 16
+    );
+
 } // namespace riaecs

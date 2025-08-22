@@ -75,7 +75,9 @@
         "resumable": "cpp",
         "array": "cpp",
         "ranges": "cpp",
-        "span": "cpp"
+        "span": "cpp",
+        "chrono": "cpp",
+        "forward_list": "cpp"
     },
     "cSpell.words": [
         "IECS",
