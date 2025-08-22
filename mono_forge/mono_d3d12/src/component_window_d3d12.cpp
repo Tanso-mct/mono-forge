@@ -193,6 +193,11 @@ MONO_D3D12_API void mono_d3d12::DestroyD3D12Window(WindowD3D12Component *compone
 
     if (!UnregisterClass(component->className_.c_str(), component->instance_))
         riaecs::NotifyError({"Failed to unregister window class."}, RIAECS_LOG_LOC);
+
+    component->handle_ = nullptr;
+
+    component->needsDestroy_ = false;
+    component->isCreated_ = false;
 }
 
 MONO_D3D12_API void mono_d3d12::DestroyedD3D12Window(WindowD3D12Component *component)
@@ -248,6 +253,8 @@ MONO_D3D12_API void mono_d3d12::ResizeD3D12Window(WindowD3D12Component *componen
 
     if (!SetWindowPos(component->handle_, nullptr, component->posX_, component->posY_, width, height, SWP_NOZORDER))
         riaecs::NotifyError({"Failed to set window size."}, RIAECS_LOG_LOC);
+
+    component->needsResize_ = false;
 }
 
 MONO_D3D12_API void mono_d3d12::ResizedD3D12Window(WindowD3D12Component *component)

@@ -6,6 +6,7 @@
 #include "mono_d3d12/include/system_window_d3d12.h"
 #include "mono_d3d12/include/window_message_state.h"
 #pragma comment(lib, "mono_d3d12.lib")
+#pragma comment(lib, "mono_input_monitor.lib")
 
 #include <future>
 
@@ -46,6 +47,12 @@ TEST(WindowD3D12, Create)
     (
         std::launch::async, [&windowComponent, &isRunning]()
         {
+            mono_input_monitor::KeyCodeConverter keyCodeConverter_;
+            mono_input_monitor::KeyInputConverter keyInputConverter_;
+            
+            mono_input_monitor::MouseCodeConverter mouseCodeConverter_;
+            mono_input_monitor::MouseInputConverter mouseInputConverter_;
+
             while (isRunning)
             {
                 // For multithreaded access to the window component
@@ -91,9 +98,8 @@ TEST(WindowD3D12, Create)
                 mono_d3d12::WindowMessageState& messageState = mono_d3d12::WindowMessageState::GetInstance();
                 std::vector<mono_d3d12::WindowMessage> windowMessages = messageState.TakeMessages(windowComponent.handle_);
 
-                // Reset the input messages for the window
-                windowComponent.keyboardMessages_.clear();
-                windowComponent.mouseMessages_.clear();
+                mono_input_monitor::UpdateInputState(windowComponent.keyboardState_);
+                mono_input_monitor::UpdateInputState(windowComponent.mouseState_);
 
                 for (const mono_d3d12::WindowMessage& windowMessage : windowMessages)
                 {
@@ -103,7 +109,12 @@ TEST(WindowD3D12, Create)
                     case WM_SYSKEYDOWN:
                     case WM_KEYUP:
                     case WM_SYSKEYUP:
-                        windowComponent.keyboardMessages_.emplace_back(windowMessage);
+                        mono_input_monitor::EditInputState
+                        (
+                            windowComponent.keyboardState_, 
+                            keyInputConverter_.Convert(windowMessage.message), 
+                            keyCodeConverter_.Convert(windowMessage.wParam, windowMessage.lParam)
+                        );
                         break;
 
                     case WM_MOUSEMOVE:
@@ -116,7 +127,13 @@ TEST(WindowD3D12, Create)
                     case WM_MBUTTONUP:
                     case WM_XBUTTONDOWN:
                     case WM_XBUTTONUP:
-                        windowComponent.mouseMessages_.emplace_back(windowMessage);
+                        mono_input_monitor::EditInputState
+                        (
+                            windowComponent.mouseState_, 
+                            mouseInputConverter_.Convert(windowMessage.message), 
+                            mouseCodeConverter_.Convert(windowMessage.message, windowMessage.wParam), 
+                            windowMessage.wParam, windowMessage.lParam
+                        );
                         break;
 
                     case WM_DESTROY:
@@ -147,6 +164,9 @@ TEST(WindowD3D12, Create)
                         break;
                     };
                 }
+
+                if (mono_input_monitor::GetKeyDown(windowComponent.keyboardState_, mono_input_monitor::KeyCode::Escape))
+                    riaecs::Log::OutToConsole("Escape key pressed\n");
             }
         }
     );
