@@ -91,10 +91,16 @@ namespace riaecs
     public:
         virtual ~ISystemList() = default;
 
-        virtual void Add(size_t systemID) = 0;
-        virtual ISystem &Get(size_t index) = 0;
+        virtual void CreateSystem(size_t systemID) = 0;
+        virtual void DestroySystem(size_t systemID) = 0;
+        virtual void DestroySystems() = 0;
+
+        virtual void SetOrder(std::vector<size_t> order) = 0;
+        virtual std::vector<size_t> GetOrder() const = 0;
+        virtual void ClearOrder() = 0;
+
+        virtual ReadWriteObject<ISystem> Get(size_t index) = 0;
         virtual size_t GetCount() const = 0;
-        virtual void Clear() = 0;
     };
     using ISystemListFactory = IFactory<std::unique_ptr<ISystemList>>;
 

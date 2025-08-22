@@ -380,49 +380,89 @@ riaecs::ReadOnlyObject<std::unordered_set<riaecs::Entity>> riaecs::ECSWorld::Vie
 
 riaecs::SystemList::~SystemList()
 {
-    std::unique_lock<std::shared_mutex> lock(mutex_);
-
-    for (size_t systemID : systemIDs_)
-    {
-        riaecs::ReadOnlyObject<riaecs::ISystemFactory> factory = riaecs::gSystemFactoryRegistry->Get(systemID);
-        factory().Destroy(std::move(systems_[systemID]));
-    }
+    DestroySystems();
 }
 
-void riaecs::SystemList::Add(size_t systemID)
+void riaecs::SystemList::CreateSystem(size_t systemID)
 {
     std::unique_lock<std::shared_mutex> lock(mutex_);
-    
+
+    if (systemMap_.find(systemID) != systemMap_.end())
+        riaecs::NotifyError({"System with ID " + std::to_string(systemID) + " already exists"}, RIAECS_LOG_LOC);
+
     riaecs::ReadOnlyObject<riaecs::ISystemFactory> factory = riaecs::gSystemFactoryRegistry->Get(systemID);
     std::unique_ptr<riaecs::ISystem> system = factory().Create();
 
-    systemIDs_.emplace_back(systemID);
-    systems_.emplace_back(std::move(system));
+    if (!system)
+        riaecs::NotifyError({"Failed to create system with ID: " + std::to_string(systemID)}, RIAECS_LOG_LOC);
+
+    systemMap_[systemID] = std::move(system);
 }
 
-riaecs::ISystem &riaecs::SystemList::Get(size_t index)
+void riaecs::SystemList::DestroySystem(size_t systemID)
+{
+    std::unique_lock<std::shared_mutex> lock(mutex_);
+
+    auto it = systemMap_.find(systemID);
+    if (it == systemMap_.end())
+        riaecs::NotifyError({"System with ID " + std::to_string(systemID) + " does not exist"}, RIAECS_LOG_LOC);
+
+    riaecs::ReadOnlyObject<riaecs::ISystemFactory> factory = riaecs::gSystemFactoryRegistry->Get(systemID);
+    factory().Destroy(std::move(it->second));
+
+    systemMap_.erase(it);
+}
+
+void riaecs::SystemList::DestroySystems()
+{
+    std::unique_lock<std::shared_mutex> lock(mutex_);
+
+    for (auto &pair : systemMap_)
+    {
+        riaecs::ReadOnlyObject<riaecs::ISystemFactory> factory = riaecs::gSystemFactoryRegistry->Get(pair.first);
+        factory().Destroy(std::move(pair.second));
+    }
+
+    systemMap_.clear();
+    order_.clear();
+}
+
+void riaecs::SystemList::SetOrder(std::vector<size_t> order)
+{
+    std::unique_lock<std::shared_mutex> lock(mutex_);
+    order_ = std::move(order);
+}
+
+std::vector<size_t> riaecs::SystemList::GetOrder() const
 {
     std::shared_lock<std::shared_mutex> lock(mutex_);
+    return order_;
+}
 
-    if (index >= systems_.size())
-        riaecs::NotifyError({"System index out of range"}, RIAECS_LOG_LOC);
+void riaecs::SystemList::ClearOrder()
+{
+    std::unique_lock<std::shared_mutex> lock(mutex_);
+    order_.clear();
+}
 
-    if (!systems_[index])
-        riaecs::NotifyError({"No system found at index: " + std::to_string(index)}, RIAECS_LOG_LOC);
+riaecs::ReadWriteObject<riaecs::ISystem> riaecs::SystemList::Get(size_t index)
+{
+    std::unique_lock<std::shared_mutex> lock(mutex_);
 
-    return *systems_[index];
+    if (index >= order_.size())
+        riaecs::NotifyError({"Index out of range: " + std::to_string(index)}, RIAECS_LOG_LOC);
+
+    size_t systemID = order_[index];
+    if (systemMap_.find(systemID) == systemMap_.end())
+        riaecs::NotifyError({"System with ID " + std::to_string(systemID) + " does not exist"}, RIAECS_LOG_LOC);
+
+    return riaecs::ReadWriteObject<riaecs::ISystem>(std::move(lock), *systemMap_[systemID]);
 }
 
 size_t riaecs::SystemList::GetCount() const
 {
     std::shared_lock<std::shared_mutex> lock(mutex_);
-    return systems_.size();
-}
-
-void riaecs::SystemList::Clear()
-{
-    std::unique_lock<std::shared_mutex> lock(mutex_);
-    systems_.clear();
+    return order_.size();
 }
 
 std::unique_ptr<riaecs::ISystemList> riaecs::EmptySystemListFactory::Create() const
@@ -564,8 +604,8 @@ void riaecs::SystemLoop::Run(IECSWorld &world, IAssetContainer &assetCont)
         bool continueLoop = true;
         for (size_t i = 0; i < systemList_->GetCount(); ++i)
         {
-            ISystem &system = systemList_->Get(i);
-            continueLoop = system.Update(world, assetCont, *commandQueue_);
+            riaecs::ReadWriteObject<ISystem> system = systemList_->Get(i);
+            continueLoop = system().Update(world, assetCont, *commandQueue_);
             if (!continueLoop)
                 break; // Stop the system update if any system returns false
         }

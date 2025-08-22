@@ -139,9 +139,9 @@ namespace riaecs
     class RIAECS_API SystemList : public ISystemList
     {
     private:
-        std::vector<size_t> systemIDs_;
-        std::vector<std::unique_ptr<ISystem>> systems_;
         mutable std::shared_mutex mutex_;
+        std::unordered_map<size_t, std::unique_ptr<ISystem>> systemMap_;
+        std::vector<size_t> order_;
 
     public:
         SystemList() = default;
@@ -154,10 +154,16 @@ namespace riaecs
          * ISystemList Implementation
         /**************************************************************************************************************/
 
-        void Add(size_t systemID) override;
-        ISystem &Get(size_t index) override;
+        void CreateSystem(size_t systemID) override;
+        void DestroySystem(size_t systemID) override;
+        void DestroySystems() override;
+
+        void SetOrder(std::vector<size_t> order) override;
+        std::vector<size_t> GetOrder() const override;
+        void ClearOrder() override;
+
+        ReadWriteObject<ISystem> Get(size_t index) override;
         size_t GetCount() const override;
-        void Clear() override;
     };
 
     class RIAECS_API EmptySystemListFactory : public ISystemListFactory

@@ -100,7 +100,13 @@ namespace
         std::unique_ptr<riaecs::ISystemList> Create() const override
         {
             std::unique_ptr<riaecs::ISystemList> systemList = std::make_unique<riaecs::SystemList>();
-            systemList->Add(TestSystemID());
+
+            // Create systems
+            systemList->CreateSystem(TestSystemID());
+
+            // Set order
+            systemList->SetOrder({ TestSystemID() });
+
             return systemList;
         }
 
