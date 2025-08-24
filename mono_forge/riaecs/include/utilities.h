@@ -3,6 +3,7 @@
 
 #include <string>
 #include <initializer_list>
+#include <future>
 
 #define RIAECS_LOG_LOC __FILE__, __LINE__, __FUNCTION__
 
@@ -25,5 +26,7 @@ namespace riaecs
     (
         const std::wstring &consoleName = L"Console", short fontSize = 16
     );
+
+    RIAECS_API bool CheckFutureIsReady(std::future<void> &future);
 
 } // namespace riaecs

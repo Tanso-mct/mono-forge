@@ -27,9 +27,6 @@
     <ClInclude Include="include\entities_factory.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="include\system_lists.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="include\system_scene.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>

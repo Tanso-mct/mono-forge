@@ -3,10 +3,10 @@
 #include "riaecs/riaecs.h"
 
 #include "mono_scene/include/entities_factory.h"
-#include "mono_scene/include/system_lists.h"
 
 #include <memory>
 #include <vector>
+#include <shared_mutex>
 
 namespace mono_scene
 {
@@ -20,9 +20,11 @@ namespace mono_scene
         SceneComponent(const SceneComponent&) = delete;
         SceneComponent& operator=(const SceneComponent&) = delete;
 
+        std::shared_mutex mutex_;
+
         std::unique_ptr<IEntitiesFactory> entitiesFactory_ = nullptr;
         std::vector<size_t> assetSourceIDs_;
-        std::unique_ptr<riaecs::IRegistry<ISystemListEditCommand>> systemListEditCmdRegistry_ = nullptr;
+        std::unique_ptr<riaecs::IRegistry<riaecs::ISystemLoopCommand>> systemListEditCmdRegistry_ = nullptr;
 
         bool isLoaded_ = false;
         bool isReleased_ = false;

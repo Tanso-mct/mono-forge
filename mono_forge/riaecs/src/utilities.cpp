@@ -90,3 +90,11 @@ RIAECS_API void riaecs::CreateStandardConsole
     if (!SetCurrentConsoleFontEx(hStdout, FALSE, &cfi))
         riaecs::NotifyError({"Failed to set console font."}, RIAECS_LOG_LOC);
 }
+
+RIAECS_API bool riaecs::CheckFutureIsReady(std::future<void> &future)
+{
+    if (!future.valid())
+        return true;
+
+    return future.wait_for(std::chrono::seconds(0)) == std::future_status::ready;
+}

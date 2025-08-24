@@ -9,8 +9,8 @@ namespace mono_scene
     public:
         virtual ~IEntitiesFactory() = default;
         
-        virtual void CreateEntities(riaecs::IECSWorld &world, riaecs::IAssetContainer &assetCont) const = 0;
-        virtual void DestroyEntities(riaecs::IECSWorld &world, riaecs::IAssetContainer &assetCont) const = 0;
+        virtual void CreateEntities(riaecs::IECSWorld &world, riaecs::IAssetContainer &assetCont) = 0;
+        virtual void DestroyEntities(riaecs::IECSWorld &world, riaecs::IAssetContainer &assetCont) = 0;
     };
 
 } // namespace mono_scene

@@ -109,6 +109,7 @@ namespace riaecs
     public:
         virtual ~ISystemLoopCommand() = default;
         virtual void Execute(ISystemList &systemList, IECSWorld &world, IAssetContainer &assetCont) const = 0;
+        virtual std::unique_ptr<riaecs::ISystemLoopCommand> Clone() const = 0;
     };
 
     class ISystemLoopCommandQueue
