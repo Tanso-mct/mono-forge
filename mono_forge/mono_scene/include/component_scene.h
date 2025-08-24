@@ -10,21 +10,21 @@
 
 namespace mono_scene
 {
-    constexpr size_t SceneComponentMaxCount = 50;
-    class MONO_SCENE_API SceneComponent
+    constexpr size_t ComponentSceneMaxCount = 50;
+    class MONO_SCENE_API ComponentScene
     {
     public:
-        SceneComponent();
-        ~SceneComponent();
+        ComponentScene();
+        ~ComponentScene();
 
-        SceneComponent(const SceneComponent&) = delete;
-        SceneComponent& operator=(const SceneComponent&) = delete;
+        ComponentScene(const ComponentScene&) = delete;
+        ComponentScene& operator=(const ComponentScene&) = delete;
 
         std::shared_mutex mutex_;
 
         std::unique_ptr<IEntitiesFactory> entitiesFactory_ = nullptr;
         std::vector<size_t> assetSourceIDs_;
-        std::unique_ptr<riaecs::IRegistry<riaecs::ISystemLoopCommand>> systemListEditCmdRegistry_ = nullptr;
+        std::vector<std::unique_ptr<riaecs::ISystemLoopCommand>> systemListEditCmds_;
 
         bool isLoaded_ = false;
         bool isReleased_ = false;
@@ -34,13 +34,13 @@ namespace mono_scene
         bool needsRelease_ = false;
 
         bool needsEditSystemList_ = false;
-        size_t targetEditCmdID_ = 0;
+        size_t targetEditCmdIndex_ = 0;
     };
-    extern MONO_SCENE_API riaecs::ComponentRegistrar<SceneComponent, SceneComponentMaxCount> ComponentSceneID;
+    extern MONO_SCENE_API riaecs::ComponentRegistrar<ComponentScene, ComponentSceneMaxCount> ComponentSceneID;
 
-    MONO_SCENE_API void LoadScene(SceneComponent *component, riaecs::IECSWorld &world, riaecs::IAssetContainer &assetCont);
-    MONO_SCENE_API void ReleaseScene(SceneComponent *component, riaecs::IECSWorld &world, riaecs::IAssetContainer &assetCont);
+    MONO_SCENE_API void LoadScene(ComponentScene *component, riaecs::IECSWorld &ecsWorld, riaecs::IAssetContainer &assetCont);
+    MONO_SCENE_API void ReleaseScene(ComponentScene *component, riaecs::IECSWorld &ecsWorld, riaecs::IAssetContainer &assetCont);
 
-    MONO_SCENE_API void AddSystemListEditCommand(SceneComponent *component, riaecs::ISystemLoopCommandQueue &systemLoopCmdQueue);
+    MONO_SCENE_API void AddSystemListEditCommand(ComponentScene *component, riaecs::ISystemLoopCommandQueue &systemLoopCmdQueue);
 
 }

@@ -6,6 +6,9 @@
 #include "mono_d3d12/mono_d3d12.h"
 #pragma comment(lib, "mono_d3d12.lib")
 
+#include "mono_scene/mono_scene.h"
+#pragma comment(lib, "mono_scene.lib")
+
 #include "mono_forge/include/game_loop.h"
 
 namespace mono_forge
@@ -16,8 +19,16 @@ namespace mono_forge
         std::unique_ptr<riaecs::ISystemList> Create() const override
         {
             std::unique_ptr<riaecs::ISystemList> systemList = std::make_unique<riaecs::SystemList>();
-            systemList->Add(mono_d3d12::SystemWindowD3D12ID());
 
+            systemList->CreateSystem(mono_d3d12::SystemWindowD3D12ID());
+            systemList->CreateSystem(mono_scene::SystemSceneID());
+
+            systemList->SetOrder
+            ({ 
+                mono_d3d12::SystemWindowD3D12ID(),
+                mono_scene::SystemSceneID()
+            });
+            
             return systemList;
         }
 
@@ -32,7 +43,40 @@ namespace mono_forge
         }
     };
 
-    void CreateInitialEntities(riaecs::IECSWorld &world, riaecs::IAssetContainer &assetCont)
+    class TitleSceneSystemListEditCmd : public riaecs::ISystemLoopCommand
+    {
+    public:
+        void Execute
+        (
+            riaecs::ISystemList &systemList, 
+            riaecs::IECSWorld &ecsWorld, 
+            riaecs::IAssetContainer &assetCont
+        ) const override
+        {
+            
+        }
+
+        std::unique_ptr<riaecs::ISystemLoopCommand> Clone() const override
+        {
+            return std::make_unique<TitleSceneSystemListEditCmd>();
+        }
+    };
+
+    class TitleSceneEntityFactory : public mono_scene::IEntitiesFactory
+    {
+    public:
+        void CreateEntities(riaecs::IECSWorld &ecsWorld, riaecs::IAssetContainer &assetCont) override
+        {
+            // Create title scene entities here
+        }
+
+        void DestroyEntities(riaecs::IECSWorld &ecsWorld, riaecs::IAssetContainer &assetCont) override
+        {
+            // Destroy title scene entities here
+        }
+    };
+
+    void CreateInitialEntities(riaecs::IECSWorld &ecsWorld, riaecs::IAssetContainer &assetCont)
     {
         /***************************************************************************************************************
          * Create window
@@ -41,9 +85,19 @@ namespace mono_forge
         riaecs::Entity windowEntity;
         {
             mono_d3d12::PrefabWindowD3D12 prefabWindow;
-            prefabWindow.SetWindowName(L"Test Window");
-            prefabWindow.SetWindowClassName(L"TestWindowClass");
-            windowEntity = prefabWindow.Instantiate(world, assetCont);
+            prefabWindow.windowName_ = L"Test Window";
+            prefabWindow.windowClassName_ = L"TestWindowClass";
+            windowEntity = prefabWindow.Instantiate(ecsWorld, assetCont);
+        }
+
+        riaecs::Entity sceneEntity;
+        {
+            mono_scene::PrefabScene prefabScene;
+            prefabScene.entitiesFactory_ = std::make_unique<TitleSceneEntityFactory>();
+            prefabScene.assetSourceIDs_ = {};
+            prefabScene.systemListEditCmds_.emplace_back(std::make_unique<TitleSceneSystemListEditCmd>());
+            prefabScene.targetEditCmdIndex_ = 0;
+            sceneEntity = prefabScene.Instantiate(ecsWorld, assetCont);
         }
     }
 

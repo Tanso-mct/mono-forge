@@ -1,15 +1,15 @@
 ﻿#include "mono_scene/src/pch.h"
 #include "mono_scene/include/component_scene.h"
 
-mono_scene::SceneComponent::SceneComponent()
+mono_scene::ComponentScene::ComponentScene()
 {
 }
 
-mono_scene::SceneComponent::~SceneComponent()
+mono_scene::ComponentScene::~ComponentScene()
 {
     entitiesFactory_.reset();
     assetSourceIDs_.clear();
-    systemListEditCmdRegistry_.reset();
+    systemListEditCmds_.clear();
 
     isLoaded_ = false;
     isReleased_ = false;
@@ -19,13 +19,13 @@ mono_scene::SceneComponent::~SceneComponent()
     needsRelease_ = false;
 
     needsEditSystemList_ = false;
-    targetEditCmdID_ = 0;
+    targetEditCmdIndex_ = 0;
 }
 
 MONO_SCENE_API riaecs::ComponentRegistrar
-<mono_scene::SceneComponent, mono_scene::SceneComponentMaxCount> mono_scene::ComponentSceneID;
+<mono_scene::ComponentScene, mono_scene::ComponentSceneMaxCount> mono_scene::ComponentSceneID;
 
-MONO_SCENE_API void mono_scene::LoadScene(SceneComponent *component, riaecs::IECSWorld &world, riaecs::IAssetContainer &assetCont)
+MONO_SCENE_API void mono_scene::LoadScene(ComponentScene *component, riaecs::IECSWorld &ecsWorld, riaecs::IAssetContainer &assetCont)
 {
     if (component->isLoaded_)
         riaecs::NotifyError({"Scene is already loaded."}, RIAECS_LOG_LOC);
@@ -89,20 +89,20 @@ MONO_SCENE_API void mono_scene::LoadScene(SceneComponent *component, riaecs::IEC
 
     // Create entities using the entities factory
     if (component->entitiesFactory_)
-        component->entitiesFactory_->CreateEntities(world, assetCont);
+        component->entitiesFactory_->CreateEntities(ecsWorld, assetCont);
 
     component->isLoaded_ = true;
     component->needsLoad_ = false;
 }
 
-MONO_SCENE_API void mono_scene::ReleaseScene(SceneComponent *component, riaecs::IECSWorld &world, riaecs::IAssetContainer &assetCont)
+MONO_SCENE_API void mono_scene::ReleaseScene(ComponentScene *component, riaecs::IECSWorld &ecsWorld, riaecs::IAssetContainer &assetCont)
 {
     if (component->isReleased_)
         riaecs::NotifyError({"Scene is already released."}, RIAECS_LOG_LOC);
 
     // Destroy all entities created by the entities factory
     if (component->entitiesFactory_)
-        component->entitiesFactory_->DestroyEntities(world, assetCont);
+        component->entitiesFactory_->DestroyEntities(ecsWorld, assetCont);
 
     // Clear all asset sources
     for (size_t assetSourceID : component->assetSourceIDs_)
@@ -115,18 +115,12 @@ MONO_SCENE_API void mono_scene::ReleaseScene(SceneComponent *component, riaecs::
     component->needsRelease_ = false;
 }
 
-MONO_SCENE_API void mono_scene::AddSystemListEditCommand(SceneComponent *component, riaecs::ISystemLoopCommandQueue &systemLoopCmdQueue)
+MONO_SCENE_API void mono_scene::AddSystemListEditCommand(ComponentScene *component, riaecs::ISystemLoopCommandQueue &systemLoopCmdQueue)
 {
-    if (!component->systemListEditCmdRegistry_)
-        riaecs::NotifyError({"System list edit command registry is not initialized."}, RIAECS_LOG_LOC);
+    if (component->targetEditCmdIndex_ >= component->systemListEditCmds_.size())
+        riaecs::NotifyError({"Invalid target edit command index."}, RIAECS_LOG_LOC);
 
-    std::unique_ptr<riaecs::ISystemLoopCommand> cmd 
-    = component->systemListEditCmdRegistry_->Get(component->targetEditCmdID_)().Clone();
-
-    if (!cmd)
-        riaecs::NotifyError({"Failed to clone system list edit command."}, RIAECS_LOG_LOC);
-
-    systemLoopCmdQueue.Enqueue(std::move(cmd));
+    systemLoopCmdQueue.Enqueue(component->systemListEditCmds_[component->targetEditCmdIndex_]->Clone());
 
     component->isSystemListEdited_ = true;
     component->needsEditSystemList_ = false;

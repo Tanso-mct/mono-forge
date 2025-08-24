@@ -38,13 +38,13 @@ mono_d3d12::SystemWindowD3D12::~SystemWindowD3D12()
 
 bool mono_d3d12::SystemWindowD3D12::Update
 (
-    riaecs::IECSWorld &world, riaecs::IAssetContainer &assetCont, 
+    riaecs::IECSWorld &ecsWorld, riaecs::IAssetContainer &assetCont, 
     riaecs::ISystemLoopCommandQueue &systemLoopCmdQueue
 ){
-    for (riaecs::Entity entity : world.View(mono_d3d12::ComponentWindowD3D12ID())())
+    for (riaecs::Entity entity : ecsWorld.View(mono_d3d12::ComponentWindowD3D12ID())())
     {
-        riaecs::ReadOnlyObject<mono_d3d12::WindowD3D12Component*> window
-        = riaecs::GetComponent<mono_d3d12::WindowD3D12Component>(world, entity, mono_d3d12::ComponentWindowD3D12ID());
+        riaecs::ReadOnlyObject<mono_d3d12::ComponentWindowD3D12*> window
+        = riaecs::GetComponent<mono_d3d12::ComponentWindowD3D12>(ecsWorld, entity, mono_d3d12::ComponentWindowD3D12ID());
 
         std::unique_lock<std::shared_mutex> windowLock(window()->mutex_);
 

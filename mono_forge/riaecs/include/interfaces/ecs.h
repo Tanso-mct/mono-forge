@@ -51,9 +51,9 @@ namespace riaecs
     };
 
     template <typename T>
-    ReadOnlyObject<T*> GetComponent(IECSWorld &world, const Entity &entity, size_t componentID)
+    ReadOnlyObject<T*> GetComponent(IECSWorld &ecsWorld, const Entity &entity, size_t componentID)
     {
-        ReadOnlyObject<std::byte*> componentData = world.GetComponent(entity, componentID);
+        ReadOnlyObject<std::byte*> componentData = ecsWorld.GetComponent(entity, componentID);
         if (componentData() == nullptr)
             return ReadOnlyObject<T*>(std::move(componentData.TakeLock()), nullptr);
 
@@ -65,7 +65,7 @@ namespace riaecs
     {
     public:
         virtual ~IPrefab() = default;
-        virtual Entity Instantiate(IECSWorld &world, IAssetContainer &assetCont) = 0;
+        virtual Entity Instantiate(IECSWorld &ecsWorld, IAssetContainer &assetCont) = 0;
     };
 
     class ISystemLoopCommandQueue;
@@ -79,7 +79,7 @@ namespace riaecs
         // If returns false, the system loop will stop
         virtual bool Update
         (
-            IECSWorld &world, IAssetContainer &assetCont, 
+            IECSWorld &ecsWorld, IAssetContainer &assetCont, 
             ISystemLoopCommandQueue &systemLoopCmdQueue
         ) = 0;
     };
@@ -108,7 +108,7 @@ namespace riaecs
     {
     public:
         virtual ~ISystemLoopCommand() = default;
-        virtual void Execute(ISystemList &systemList, IECSWorld &world, IAssetContainer &assetCont) const = 0;
+        virtual void Execute(ISystemList &systemList, IECSWorld &ecsWorld, IAssetContainer &assetCont) const = 0;
         virtual std::unique_ptr<riaecs::ISystemLoopCommand> Clone() const = 0;
     };
 
@@ -133,7 +133,7 @@ namespace riaecs
         virtual bool IsReady() const = 0;
 
         virtual void Initialize() = 0;
-        virtual void Run(IECSWorld &world, IAssetContainer &assetCont) = 0;
+        virtual void Run(IECSWorld &ecsWorld, IAssetContainer &assetCont) = 0;
     };
 
 } // namespace riaecs

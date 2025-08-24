@@ -27,7 +27,7 @@ namespace mono_d3d12
 
         bool Update
         (
-            riaecs::IECSWorld &world, riaecs::IAssetContainer &assetCont, 
+            riaecs::IECSWorld &ecsWorld, riaecs::IAssetContainer &assetCont, 
             riaecs::ISystemLoopCommandQueue &systemLoopCmdQueue
         ) override;
     };

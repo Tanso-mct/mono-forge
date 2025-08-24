@@ -240,7 +240,7 @@ namespace riaecs
         bool IsReady() const override;
 
         void Initialize() override;
-        void Run(IECSWorld &world, IAssetContainer &assetCont) override;
+        void Run(IECSWorld &ecsWorld, IAssetContainer &assetCont) override;
     };
 
 } // namespace riaecs

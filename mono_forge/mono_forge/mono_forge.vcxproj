@@ -143,6 +143,9 @@
     <ProjectReference Include="..\mono_d3d12\mono_d3d12.vcxproj">
       <Project>{5ff342a5-dfda-4463-9388-55c38e89ae42}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\mono_scene\mono_scene.vcxproj">
+      <Project>{2cdd3ba4-a85e-46a4-95e0-e71e4c742edb}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\riaecs\riaecs.vcxproj">
       <Project>{ca1b6480-e0d8-4ef7-bcc8-87b2a51b9f20}</Project>
     </ProjectReference>

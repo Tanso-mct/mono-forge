@@ -578,7 +578,7 @@ void riaecs::SystemLoop::Initialize()
         riaecs::NotifyError({"Failed to create System Loop Command Queue"}, RIAECS_LOG_LOC);
 }
 
-void riaecs::SystemLoop::Run(IECSWorld &world, IAssetContainer &assetCont)
+void riaecs::SystemLoop::Run(IECSWorld &ecsWorld, IAssetContainer &assetCont)
 {
     if (!isReady_)
         riaecs::NotifyError({"SystemLoop is not ready"}, RIAECS_LOG_LOC);
@@ -592,7 +592,7 @@ void riaecs::SystemLoop::Run(IECSWorld &world, IAssetContainer &assetCont)
         {
             std::unique_ptr<ISystemLoopCommand> cmd = commandQueue_->Dequeue();
             if (cmd)
-                cmd->Execute(*systemList_, world, assetCont);
+                cmd->Execute(*systemList_, ecsWorld, assetCont);
             else
                 riaecs::NotifyError({"Invalid command in System Loop Command Queue"}, RIAECS_LOG_LOC);
         }
@@ -605,7 +605,7 @@ void riaecs::SystemLoop::Run(IECSWorld &world, IAssetContainer &assetCont)
         for (size_t i = 0; i < systemList_->GetCount(); ++i)
         {
             riaecs::ReadWriteObject<ISystem> system = systemList_->Get(i);
-            continueLoop = system().Update(world, assetCont, *commandQueue_);
+            continueLoop = system().Update(ecsWorld, assetCont, *commandQueue_);
             if (!continueLoop)
                 break; // Stop the system update if any system returns false
         }

@@ -16,7 +16,7 @@ TEST(WindowD3D12, Create)
      * Set window component properties
     /******************************************************************************************************************/
 
-    mono_d3d12::WindowD3D12Component windowComponent;
+    mono_d3d12::ComponentWindowD3D12 windowComponent;
     windowComponent.name_ = L"Test Window";
     windowComponent.className_ = L"TestWindowClass";
     windowComponent.width_ = 800;

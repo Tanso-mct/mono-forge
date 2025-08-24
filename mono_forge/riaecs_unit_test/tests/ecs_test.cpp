@@ -69,17 +69,17 @@ namespace
     public:
         bool Update
         (
-            riaecs::IECSWorld &world, riaecs::IAssetContainer &assetCont, 
+            riaecs::IECSWorld &ecsWorld, riaecs::IAssetContainer &assetCont, 
             riaecs::ISystemLoopCommandQueue &systemLoopCmdQueue
         ) override
         {
             size_t componentCount = 0;
-            for (riaecs::Entity entity : world.View(TestAComponentID())())
+            for (riaecs::Entity entity : ecsWorld.View(TestAComponentID())())
             {
                 riaecs::ReadOnlyObject<TestAComponent*> test 
-                = riaecs::GetComponent<TestAComponent>(world, entity, TestAComponentID());
+                = riaecs::GetComponent<TestAComponent>(ecsWorld, entity, TestAComponentID());
 
-                //world.AddComponent(entity, TestBComponentID()); // Should deadlock
+                //ecsWorld.AddComponent(entity, TestBComponentID()); // Should deadlock
 
                 if (test())
                     std::cout << "TestAComponent value: " << test()->value << std::endl;

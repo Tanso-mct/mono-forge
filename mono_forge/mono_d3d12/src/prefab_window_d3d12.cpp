@@ -3,13 +3,13 @@
 
 #include "mono_d3d12/include/component_window_d3d12.h"
 
-riaecs::Entity mono_d3d12::PrefabWindowD3D12::Instantiate(riaecs::IECSWorld &world, riaecs::IAssetContainer &assetCont)
+riaecs::Entity mono_d3d12::PrefabWindowD3D12::Instantiate(riaecs::IECSWorld &ecsWorld, riaecs::IAssetContainer &assetCont)
 {
-    riaecs::Entity entity = world.CreateEntity();
-    world.AddComponent(entity, ComponentWindowD3D12ID());
+    riaecs::Entity entity = ecsWorld.CreateEntity();
+    ecsWorld.AddComponent(entity, ComponentWindowD3D12ID());
 
-    riaecs::ReadOnlyObject<WindowD3D12Component*> window 
-    = riaecs::GetComponent<WindowD3D12Component>(world, entity, ComponentWindowD3D12ID());
+    riaecs::ReadOnlyObject<ComponentWindowD3D12*> window 
+    = riaecs::GetComponent<ComponentWindowD3D12>(ecsWorld, entity, ComponentWindowD3D12ID());
 
     std::unique_lock<std::shared_mutex> lock(window()->mutex_);
 

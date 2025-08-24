@@ -149,7 +149,7 @@ namespace
             std::cout << "TestSystemListEditCommand destroyed" << std::endl; 
         }
 
-        void Execute(riaecs::ISystemList &systemList, riaecs::IECSWorld &world, riaecs::IAssetContainer &assetCont) const override
+        void Execute(riaecs::ISystemList &systemList, riaecs::IECSWorld &ecsWorld, riaecs::IAssetContainer &assetCont) const override
         {
             std::cout << "Executing TestSystemListEditCommand" << std::endl;
         }
@@ -176,25 +176,25 @@ namespace
             std::cout << "TestEntitiesFactory destroyed" << std::endl; 
         }
 
-        void CreateEntities(riaecs::IECSWorld &world, riaecs::IAssetContainer &assetCont) override
+        void CreateEntities(riaecs::IECSWorld &ecsWorld, riaecs::IAssetContainer &assetCont) override
         {
             std::cout << "Creating entities in TestEntitiesFactory" << std::endl;
 
-            riaecs::Entity entity = world.CreateEntity();
+            riaecs::Entity entity = ecsWorld.CreateEntity();
             std::cout << "Created entity with index: " << entity.GetIndex() << std::endl;
 
-            world.AddComponent(entity, TestAComponentID());
+            ecsWorld.AddComponent(entity, TestAComponentID());
             std::cout << "Added TestAComponent to entity" << std::endl;
 
             createdEntities_.push_back(entity);
         }
 
-        void DestroyEntities(riaecs::IECSWorld &world, riaecs::IAssetContainer &assetCont) override
+        void DestroyEntities(riaecs::IECSWorld &ecsWorld, riaecs::IAssetContainer &assetCont) override
         {
             std::cout << "Destroying entities in TestEntitiesFactory" << std::endl;
 
             for (const riaecs::Entity &entity : createdEntities_)
-                world.DestroyEntity(entity);
+                ecsWorld.DestroyEntity(entity);
         }
     };
 
@@ -215,7 +215,7 @@ TEST(Scene, LifeCycle)
 
     std::unique_ptr<riaecs::ISystemLoopCommandQueue> systemLoopCmdQueue = std::make_unique<riaecs::SystemLoopCommandQueue>();
 
-    mono_scene::SceneComponent sceneComponent;
+    mono_scene::ComponentScene sceneComponent;
     sceneComponent.needsLoad_ = true;
     sceneComponent.needsEditSystemList_ = true;
 
