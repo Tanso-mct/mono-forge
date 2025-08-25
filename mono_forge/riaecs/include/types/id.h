@@ -11,14 +11,16 @@ namespace riaecs
     private:
         size_t index_;
         size_t generation_;
+        bool isValid_ = false;
 
     public:
-        ID(size_t index, size_t generation) : index_(index), generation_(generation) {}
+        ID(size_t index, size_t generation) : index_(index), generation_(generation), isValid_(true) {}
         ID() = default;
         ~ID() = default;
 
         size_t GetIndex() const { return index_; }
         size_t GetGeneration() const { return generation_; }
+        bool IsValid() const { return isValid_; }
 
         bool operator==(const ID &other) const
         {

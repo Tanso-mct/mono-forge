@@ -7,7 +7,7 @@
 
 namespace mono_identity
 {
-    constexpr size_t ComponentIdentityMaxCount = 50000;
+    constexpr size_t ComponentIdentityMaxCount = 10000;
     class MONO_IDENTITY_API ComponentIdentity
     {
     public:
