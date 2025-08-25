@@ -94,6 +94,7 @@ namespace riaecs
         virtual void CreateSystem(size_t systemID) = 0;
         virtual void DestroySystem(size_t systemID) = 0;
         virtual void DestroySystems() = 0;
+        virtual bool HasSystem(size_t systemID) const = 0;
 
         virtual void SetOrder(std::vector<size_t> order) = 0;
         virtual std::vector<size_t> GetOrder() const = 0;

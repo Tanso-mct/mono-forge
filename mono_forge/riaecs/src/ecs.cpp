@@ -427,6 +427,12 @@ void riaecs::SystemList::DestroySystems()
     order_.clear();
 }
 
+bool riaecs::SystemList::HasSystem(size_t systemID) const
+{
+    std::shared_lock<std::shared_mutex> lock(mutex_);
+    return systemMap_.find(systemID) != systemMap_.end();
+}
+
 void riaecs::SystemList::SetOrder(std::vector<size_t> order)
 {
     std::unique_lock<std::shared_mutex> lock(mutex_);

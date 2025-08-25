@@ -157,6 +157,7 @@ namespace riaecs
         void CreateSystem(size_t systemID) override;
         void DestroySystem(size_t systemID) override;
         void DestroySystems() override;
+        bool HasSystem(size_t systemID) const override;
 
         void SetOrder(std::vector<size_t> order) override;
         std::vector<size_t> GetOrder() const override;

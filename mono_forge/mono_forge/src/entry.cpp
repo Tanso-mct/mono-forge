@@ -43,7 +43,17 @@ namespace mono_forge
             riaecs::IAssetContainer &assetCont
         ) const override
         {
-            
+            if (!systemList.HasSystem(mono_d3d12::SystemWindowD3D12ID()))
+                systemList.CreateSystem(mono_d3d12::SystemWindowD3D12ID());
+
+            if (!systemList.HasSystem(mono_scene::SystemSceneID()))
+                systemList.CreateSystem(mono_scene::SystemSceneID());
+
+            systemList.SetOrder
+            ({ 
+                mono_d3d12::SystemWindowD3D12ID(),
+                mono_scene::SystemSceneID()
+            });
         }
 
         std::unique_ptr<riaecs::ISystemLoopCommand> Clone() const override
