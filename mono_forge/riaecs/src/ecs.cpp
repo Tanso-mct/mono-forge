@@ -465,17 +465,17 @@ size_t riaecs::SystemList::GetCount() const
     return order_.size();
 }
 
-std::unique_ptr<riaecs::ISystemList> riaecs::EmptySystemListFactory::Create() const
+std::unique_ptr<riaecs::ISystemList> riaecs::DefaultSystemListFactory::Create() const
 {
     return std::make_unique<riaecs::SystemList>();
 }
 
-void riaecs::EmptySystemListFactory::Destroy(std::unique_ptr<ISystemList> product) const
+void riaecs::DefaultSystemListFactory::Destroy(std::unique_ptr<ISystemList> product) const
 {
     product.reset();
 }
 
-size_t riaecs::EmptySystemListFactory::GetProductSize() const
+size_t riaecs::DefaultSystemListFactory::GetProductSize() const
 {
     return sizeof(SystemList);
 }
@@ -504,17 +504,17 @@ bool riaecs::SystemLoopCommandQueue::IsEmpty() const
     return commandQueue_.empty();
 }
 
-std::unique_ptr<riaecs::ISystemLoopCommandQueue> riaecs::EmptySystemLoopCommandQueueFactory::Create() const
+std::unique_ptr<riaecs::ISystemLoopCommandQueue> riaecs::DefaultSystemLoopCommandQueueFactory::Create() const
 {
     return std::make_unique<SystemLoopCommandQueue>();
 }
 
-void riaecs::EmptySystemLoopCommandQueueFactory::Destroy(std::unique_ptr<ISystemLoopCommandQueue> product) const
+void riaecs::DefaultSystemLoopCommandQueueFactory::Destroy(std::unique_ptr<ISystemLoopCommandQueue> product) const
 {
     product.reset();
 }
 
-size_t riaecs::EmptySystemLoopCommandQueueFactory::GetProductSize() const
+size_t riaecs::DefaultSystemLoopCommandQueueFactory::GetProductSize() const
 {
     return sizeof(SystemLoopCommandQueue);
 }

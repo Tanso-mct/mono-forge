@@ -166,19 +166,19 @@ namespace riaecs
         size_t GetCount() const override;
     };
 
-    class RIAECS_API EmptySystemListFactory : public ISystemListFactory
+    class RIAECS_API DefaultSystemListFactory : public ISystemListFactory
     {
     public:
-        EmptySystemListFactory() = default;
-        ~EmptySystemListFactory() override = default;
+        DefaultSystemListFactory() = default;
+        ~DefaultSystemListFactory() override = default;
 
         /***************************************************************************************************************
          * IFactory Implementation
         /**************************************************************************************************************/
 
-        std::unique_ptr<ISystemList> Create() const override;
-        void Destroy(std::unique_ptr<ISystemList> product) const override;
-        size_t GetProductSize() const override;
+        virtual std::unique_ptr<ISystemList> Create() const override;
+        virtual void Destroy(std::unique_ptr<ISystemList> product) const override;
+        virtual size_t GetProductSize() const override;
     };
 
     class RIAECS_API SystemLoopCommandQueue : public ISystemLoopCommandQueue
@@ -200,19 +200,19 @@ namespace riaecs
         bool IsEmpty() const override;
     };
 
-    class RIAECS_API EmptySystemLoopCommandQueueFactory : public ISystemLoopCommandQueueFactory
+    class RIAECS_API DefaultSystemLoopCommandQueueFactory : public ISystemLoopCommandQueueFactory
     {
     public:
-        EmptySystemLoopCommandQueueFactory() = default;
-        ~EmptySystemLoopCommandQueueFactory() override = default;
+        DefaultSystemLoopCommandQueueFactory() = default;
+        ~DefaultSystemLoopCommandQueueFactory() override = default;
 
         /***************************************************************************************************************
          * IFactory Implementation
         /**************************************************************************************************************/
 
-        std::unique_ptr<ISystemLoopCommandQueue> Create() const override;
-        void Destroy(std::unique_ptr<ISystemLoopCommandQueue> product) const override;
-        size_t GetProductSize() const override;
+        virtual std::unique_ptr<ISystemLoopCommandQueue> Create() const override;
+        virtual void Destroy(std::unique_ptr<ISystemLoopCommandQueue> product) const override;
+        virtual size_t GetProductSize() const override;
     };
 
     class RIAECS_API SystemLoop : public ISystemLoop

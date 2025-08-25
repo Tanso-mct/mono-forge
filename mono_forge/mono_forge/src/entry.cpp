@@ -13,10 +13,10 @@
 
 namespace mono_forge
 {
-    class InitialSystemListFactory : public riaecs::ISystemListFactory
+    class InitialSystemListFactory : public riaecs::DefaultSystemListFactory
     {
     public:
-        std::unique_ptr<riaecs::ISystemList> Create() const override
+        virtual std::unique_ptr<riaecs::ISystemList> Create() const override
         {
             std::unique_ptr<riaecs::ISystemList> systemList = std::make_unique<riaecs::SystemList>();
 
@@ -30,16 +30,6 @@ namespace mono_forge
             });
             
             return systemList;
-        }
-
-        void Destroy(std::unique_ptr<riaecs::ISystemList> product) const override
-        {
-            product.reset();
-        }
-
-        size_t GetProductSize() const override
-        {
-            return sizeof(riaecs::SystemList);
         }
     };
 
@@ -137,7 +127,7 @@ int APIENTRY wWinMain
 
     std::unique_ptr<riaecs::ISystemLoop> systemLoop = std::make_unique<riaecs::SystemLoop>();
     systemLoop->SetSystemListFactory(std::make_unique<mono_forge::InitialSystemListFactory>());
-    systemLoop->SetSystemLoopCommandQueueFactory(std::make_unique<riaecs::EmptySystemLoopCommandQueueFactory>());
+    systemLoop->SetSystemLoopCommandQueueFactory(std::make_unique<riaecs::DefaultSystemLoopCommandQueueFactory>());
     systemLoop->Initialize();
 
     /*******************************************************************************************************************

@@ -140,7 +140,7 @@ TEST(ECS, World)
     // Create system loop
     std::unique_ptr<riaecs::ISystemLoop> systemLoop = std::make_unique<riaecs::SystemLoop>();
     systemLoop->SetSystemListFactory(std::make_unique<TestSystemListFactory>());
-    systemLoop->SetSystemLoopCommandQueueFactory(std::make_unique<riaecs::EmptySystemLoopCommandQueueFactory>());
+    systemLoop->SetSystemLoopCommandQueueFactory(std::make_unique<riaecs::DefaultSystemLoopCommandQueueFactory>());
     EXPECT_TRUE(systemLoop->IsReady());
 
     // Create entity 1
