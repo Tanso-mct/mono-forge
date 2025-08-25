@@ -33,6 +33,20 @@ namespace mono_forge
         }
     };
 
+    class TitleSceneEntityFactory : public mono_scene::IEntitiesFactory
+    {
+    public:
+        void CreateEntities(riaecs::IECSWorld &ecsWorld, riaecs::IAssetContainer &assetCont) override
+        {
+            // Create title scene entities here
+        }
+
+        void DestroyEntities(riaecs::IECSWorld &ecsWorld, riaecs::IAssetContainer &assetCont) override
+        {
+            // Destroy title scene entities here
+        }
+    };
+
     class TitleSceneSystemListEditCmd : public riaecs::ISystemLoopCommand
     {
     public:
@@ -59,20 +73,6 @@ namespace mono_forge
         std::unique_ptr<riaecs::ISystemLoopCommand> Clone() const override
         {
             return std::make_unique<TitleSceneSystemListEditCmd>();
-        }
-    };
-
-    class TitleSceneEntityFactory : public mono_scene::IEntitiesFactory
-    {
-    public:
-        void CreateEntities(riaecs::IECSWorld &ecsWorld, riaecs::IAssetContainer &assetCont) override
-        {
-            // Create title scene entities here
-        }
-
-        void DestroyEntities(riaecs::IECSWorld &ecsWorld, riaecs::IAssetContainer &assetCont) override
-        {
-            // Destroy title scene entities here
         }
     };
 

@@ -27,6 +27,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mono_scene", "mono_scene\mo
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mono_scene_test", "mono_scene_test\mono_scene_test.vcxproj", "{77837121-665B-465D-A66B-04B08839D900}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mono_identity", "mono_identity\mono_identity.vcxproj", "{FEF0695A-7353-400A-9218-09314AF8F4B4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -131,6 +133,14 @@ Global
 		{77837121-665B-465D-A66B-04B08839D900}.Release|x64.Build.0 = Release|x64
 		{77837121-665B-465D-A66B-04B08839D900}.Release|x86.ActiveCfg = Release|Win32
 		{77837121-665B-465D-A66B-04B08839D900}.Release|x86.Build.0 = Release|Win32
+		{FEF0695A-7353-400A-9218-09314AF8F4B4}.Debug|x64.ActiveCfg = Debug|x64
+		{FEF0695A-7353-400A-9218-09314AF8F4B4}.Debug|x64.Build.0 = Debug|x64
+		{FEF0695A-7353-400A-9218-09314AF8F4B4}.Debug|x86.ActiveCfg = Debug|Win32
+		{FEF0695A-7353-400A-9218-09314AF8F4B4}.Debug|x86.Build.0 = Debug|Win32
+		{FEF0695A-7353-400A-9218-09314AF8F4B4}.Release|x64.ActiveCfg = Release|x64
+		{FEF0695A-7353-400A-9218-09314AF8F4B4}.Release|x64.Build.0 = Release|x64
+		{FEF0695A-7353-400A-9218-09314AF8F4B4}.Release|x86.ActiveCfg = Release|Win32
+		{FEF0695A-7353-400A-9218-09314AF8F4B4}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
